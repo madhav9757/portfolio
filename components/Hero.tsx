@@ -1,12 +1,13 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion"; // <-- FIX 1: Imported Variants
 import { Github, Linkedin, Mail, Download, ArrowRight, CornerDownRight } from "lucide-react"; // Imported CornerDownRight for a nice touch
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator"; // Import Separator
 
 export default function Hero() {
-  const containerVariants = {
+  // <-- FIX 2: Explicitly typed containerVariants
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -17,14 +18,15 @@ export default function Hero() {
     },
   };
 
-  const itemVariants = {
+  // <-- FIX 3: Explicitly typed itemVariants
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.7, // Slightly longer duration for smoother fade-in
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1], // This array is now correctly accepted
       },
     },
   };
