@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React from "react";
 import { motion } from "framer-motion";
 import {
   Code2,
@@ -8,6 +10,12 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
+
+// Type for Card-like components
+type BaseProps = {
+  children: React.ReactNode;
+  className?: string;
+};
 
 // The data structure remains the same
 const data = [
@@ -55,40 +63,44 @@ const data = [
   },
 ];
 
-// Helper component replacements for Shadcn/UI components
-// Mimics Shadcn's Card structure using pure Tailwind CSS
-const Card = ({ children, className = "" }) => (
-  <div className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl ${className}`}>
+// =====================
+// Card Components (fixed types)
+// =====================
+const Card = ({ children, className = "" }: BaseProps) => (
+  <div
+    className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl ${className}`}
+  >
     {children}
   </div>
 );
 
-const CardHeader = ({ children, className = "" }) => (
+const CardHeader = ({ children, className = "" }: BaseProps) => (
   <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>
     {children}
   </div>
 );
 
-const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-xl font-bold leading-none tracking-tight ${className}`}>
+const CardTitle = ({ children, className = "" }: BaseProps) => (
+  <h3
+    className={`text-xl font-bold leading-none tracking-tight ${className}`}
+  >
     {children}
   </h3>
 );
 
-const CardContent = ({ children, className = "" }) => (
-  <div className={`p-6 pt-0 ${className}`}>
-    {children}
-  </div>
+const CardContent = ({ children, className = "" }: BaseProps) => (
+  <div className={`p-6 pt-0 ${className}`}>{children}</div>
 );
 
-const App = () => {
+// =====================
+// Main Component
+// =====================
+const Skills = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      },
+      transition: { staggerChildren: 0.08 },
     },
   };
 
@@ -106,8 +118,12 @@ const App = () => {
   };
 
   return (
-    <section id="skills" className="py-16 relative min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
+    <section
+      id="skills"
+      className="py-16 relative min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Animated Background */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <motion.div
@@ -157,9 +173,11 @@ const App = () => {
               🛠️ Tech Stack
             </span>
           </motion.div>
+
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
             Skills & Technologies
           </h2>
+
           <p className="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto">
             A comprehensive toolkit for building modern, scalable applications
           </p>
@@ -175,10 +193,12 @@ const App = () => {
         >
           {data.map((skill) => {
             const Icon = skill.icon;
+
             return (
               <motion.div key={skill.category} variants={itemVariants}>
                 <Card className="border-2 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/20 group h-full overflow-hidden relative transform hover:-translate-y-1">
-                  {/* Animated Background Gradient */}
+
+                  {/* Hover BG */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div
                       className={`absolute inset-0 bg-gradient-to-br ${skill.color} opacity-5`}
@@ -194,6 +214,7 @@ const App = () => {
                       >
                         <Icon className="w-6 h-6 text-white" />
                       </motion.div>
+
                       <CardTitle className="text-2xl font-extrabold group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">
                         {skill.category}
                       </CardTitle>
@@ -205,6 +226,7 @@ const App = () => {
                         <span>Proficiency</span>
                         <span className="font-semibold">{skill.level}%</span>
                       </div>
+
                       <div className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
                           className={`h-full bg-gradient-to-r ${skill.color} rounded-full`}
@@ -245,7 +267,7 @@ const App = () => {
                     </ul>
                   </CardContent>
 
-                  {/* Hover Effect Corner */}
+                  {/* Hover Glow Effect */}
                   <motion.div
                     className={`absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br ${skill.color} rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-500`}
                   />
@@ -255,7 +277,7 @@ const App = () => {
           })}
         </motion.div>
 
-        {/* Additional Info */}
+        {/* Footer Note */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -266,6 +288,7 @@ const App = () => {
           <p className="text-lg text-gray-500 dark:text-gray-400">
             Always learning and expanding my skillset with the latest technologies
           </p>
+
           <motion.div
             className="mt-4 inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 font-bold"
             animate={{ x: [0, 5, 0] }}
@@ -275,9 +298,10 @@ const App = () => {
             <span className="text-lg">Continuously Growing</span>
           </motion.div>
         </motion.div>
+
       </div>
     </section>
   );
 };
 
-export default App;
+export default Skills;
