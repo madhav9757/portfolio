@@ -2,8 +2,9 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
-import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion"; // Import useScroll, useSpring
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X, Search, Sun, Moon, ExternalLink } from "lucide-react";
+import Image from "next/image"; // ⭐️ ADDED: Image import
 
 // Assuming these are imported correctly from your components directory
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,9 @@ export default function Navbar() {
   const lastScroll = useRef(0);
   const navRef = useRef<HTMLElement | null>(null);
 
+  // ⭐️ FIX 1: Add mounted state for hydration fix
+  const [mounted, setMounted] = useState(false);
+
   // Framer Motion scroll progress for the top bar
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -45,6 +49,9 @@ export default function Navbar() {
 
   // Scroll spy: set active link when section in view
   useEffect(() => {
+    // ⭐️ FIX 1: Set mounted to true on the client
+    setMounted(true);
+
     // The height of the fixed/sticky navbar container + some padding
     const NAVBAR_HEIGHT = 80; // Estimate: top-4 + padding/height of the bar itself
 
@@ -56,7 +63,6 @@ export default function Navbar() {
         const el = document.getElementById(id);
         if (!el) return false;
         // Check if the element's top is just above or at the offset line.
-        // A smaller tolerance can be added if needed, e.g., <= topOffset + 10
         const rect = el.getBoundingClientRect();
         return rect.top <= topOffset && rect.bottom >= topOffset;
       });
@@ -103,6 +109,28 @@ export default function Navbar() {
       window.scrollTo({ top: y, behavior: "smooth" });
     }
     setOpen(false);
+  };
+
+  // Helper function to render the theme icon (prevents repetition)
+  const renderThemeToggle = () => {
+    if (!mounted) {
+      // Return a placeholder on the server to prevent layout shift
+      return <Sun size={18} className="invisible" />;
+    }
+
+    return (
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={theme}
+          initial={{ y: -5, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 5, opacity: 0 }}
+          transition={{ duration: 0.15 }}
+        >
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+        </motion.span>
+      </AnimatePresence>
+    );
   };
 
   return (
@@ -217,25 +245,15 @@ export default function Navbar() {
                     </Button>
                   </div>
 
-                  {/* Theme toggle */}
+                  {/* Theme toggle (Desktop) */}
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                     aria-label="Toggle theme"
                   >
-                    {/* Add transition for a smoother icon switch */}
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.span
-                        key={theme}
-                        initial={{ y: -5, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: 5, opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                      >
-                        {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />} {/* Slightly larger icons */}
-                      </motion.span>
-                    </AnimatePresence>
+                    {/* ⭐️ FIX 1: Use the conditional rendering helper */}
+                    {renderThemeToggle()}
                   </Button>
 
                   {/* User avatar dropdown */}
@@ -243,11 +261,14 @@ export default function Navbar() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="shrink-0" aria-label="Open user menu">
                         <Avatar className="w-8 h-8 border-2 border-primary/50 dark:border-primary/30"> {/* Added border for emphasis */}
-                          {/* Fallback avatar text is good practice if the image fails */}
-                          <span className="flex items-center justify-center text-xs font-medium">MS</span> 
-                          {/* Note: In a real app, use a proper Image component for optimization */}
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img alt="avatar" src="/avatar.jpg" className="object-cover" />
+                          {/* ⭐️ FIX 2: Corrected Image path and used Next/Image component */}
+                          <Image
+                            alt="avatar"
+                            src="/avatar.png"
+                            width={32}
+                            height={32}
+                            className="object-cover"
+                          />
                         </Avatar>
                       </Button>
                     </DropdownMenuTrigger>
@@ -282,9 +303,16 @@ export default function Navbar() {
                           {/* Header section (Logo and Close button) */}
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white font-semibold shrink-0">
-                                MS
-                              </div>
+                                {/* ⭐️ FIX 3: Corrected Mobile Sheet Header to display avatar image */}
+                                <Avatar className="w-9 h-9 border-2 border-primary/50 dark:border-primary/30 shrink-0">
+                                    <Image
+                                        alt="avatar"
+                                        src="/avatar.png"
+                                        width={36}
+                                        height={36}
+                                        className="object-cover"
+                                    />
+                                </Avatar>
                               <div>
                                 <p className="font-semibold text-sm">Madhav Semwal</p>
                                 <p className="text-xs text-muted-foreground">Full-Stack Developer</p>
@@ -327,7 +355,8 @@ export default function Navbar() {
                                     Email me
                                 </a>
                                 <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="shrink-0">
-                                    {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                                    {/* ⭐️ FIX 1: Use the conditional rendering helper */}
+                                    {renderThemeToggle()}
                                 </Button>
                             </div>
                           </div>
