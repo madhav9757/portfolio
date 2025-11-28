@@ -7,57 +7,51 @@ import About from "@/components/About";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 
+function SectionWrapper({
+  id,
+  children,
+}: {
+  id: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <div className="max-w-6xl mx-auto px-6">{children}</div>
+    </section>
+  );
+}
+
 export default function Page() {
   return (
     <>
-      {/* NAVBAR (Sticky Top) */}
+      {/* NAVBAR */}
       <Navbar />
 
       {/* MAIN CONTENT */}
-      <main className="pt-20 pb-28 space-y-40">
-        
-        {/* HOME */}
-        <section id="home" className="scroll-mt-24">
-          <div className="max-w-6xl mx-auto px-6">
-            <Hero />
-          </div>
-        </section>
+      <main className="pt-24 pb-32 space-y-48">
+        <SectionWrapper id="home">
+          <Hero />
+        </SectionWrapper>
 
-        {/* PROJECTS */}
-        <section id="projects" className="scroll-mt-24">
-          <div className="max-w-6xl mx-auto px-6">
-            <Projects />
-          </div>
-        </section>
+        <SectionWrapper id="projects">
+          <Projects />
+        </SectionWrapper>
 
-        {/* SKILLS */}
-        <section id="skills" className="scroll-mt-24">
-          <div className="max-w-6xl mx-auto px-6">
-            <Skills />
-          </div>
-        </section>
+        <SectionWrapper id="skills">
+          <Skills />
+        </SectionWrapper>
 
-        {/* EXPERIENCE */}
-        <section id="experience" className="scroll-mt-24">
-          <div className="max-w-6xl mx-auto px-6">
-            <Experience />
-          </div>
-        </section>
+        <SectionWrapper id="experience">
+          <Experience />
+        </SectionWrapper>
 
-        {/* ABOUT */}
-        <section id="about" className="scroll-mt-24">
-          <div className="max-w-6xl mx-auto px-6">
-            <About />
-          </div>
-        </section>
+        <SectionWrapper id="about">
+          <About />
+        </SectionWrapper>
 
-        {/* CONTACT */}
-        <section id="contact" className="scroll-mt-24">
-          <div className="max-w-6xl mx-auto px-6">
-            <ContactForm />
-          </div>
-        </section>
-
+        <SectionWrapper id="contact">
+          <ContactForm />
+        </SectionWrapper>
       </main>
 
       {/* FOOTER */}

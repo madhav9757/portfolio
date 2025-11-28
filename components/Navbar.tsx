@@ -3,10 +3,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
-import { Menu, X, Search, Sun, Moon, ExternalLink } from "lucide-react";
-import Image from "next/image"; // ⭐️ ADDED: Image import
+import { Menu, X, Search, Sun, Moon, ExternalLink, Github as GitHubIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-// Assuming these are imported correctly from your components directory
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,95 @@ const NAV_LINKS = [
   { id: "contact", label: "Contact" },
 ];
 
+// --- GitHub Menu Component ---
+function GitHubMenu() {
+  const [repos, setRepos] = useState<any[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("https://api.github.com/users/madhav9757/repos?sort=updated&per_page=5")
+      .then((res) => {
+        if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
+        return res.json();
+      })
+      .then((data: any[]) => {
+        const filtered = data.filter((r) => !r.fork).map((r) => ({
+          name: r.name,
+          html_url: r.html_url,
+          description: r.description,
+        }));
+        setRepos(filtered);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Could not load repos");
+      });
+  }, []);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label="GitHub menu">
+          <GitHubIcon size={18} />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end" className="w-64 bg-background border border-border rounded-lg">
+        <div className="p-3 border-b border-border/60">
+          <a
+            href="https://github.com/madhav9757"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 font-semibold hover:underline"
+          >
+            <GitHubIcon size={20} />
+            <span>madhav9757</span>
+          </a>
+        </div>
+
+        <div className="p-2">
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          {!repos && !error && <p className="text-sm text-muted-foreground">Loading...</p>}
+          {repos && repos.length === 0 && <p className="text-sm text-muted-foreground">No public repos</p>}
+          {repos && repos.length > 0 && (
+            <ul className="space-y-2">
+              {repos.map((repo) => (
+                <li key={repo.name}>
+                  <a
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-3 py-2 rounded-md hover:bg-secondary/50 dark:hover:bg-secondary/30"
+                  >
+                    <div className="font-medium text-sm">{repo.name}</div>
+                    {repo.description && (
+                      <p className="text-xs text-muted-foreground mt-1 truncate">{repo.description}</p>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <Separator className="my-2" />
+
+        <div className="p-2 text-center">
+          <a
+            href="https://github.com/madhav9757"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold text-primary hover:underline inline-flex items-center justify-center gap-1"
+          >
+            View full GitHub <ExternalLink size={14} />
+          </a>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+// --- Navbar Component ---
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false); // mobile sheet
@@ -35,11 +124,8 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false); // hide on scroll
   const lastScroll = useRef(0);
   const navRef = useRef<HTMLElement | null>(null);
-
-  // ⭐️ FIX 1: Add mounted state for hydration fix
   const [mounted, setMounted] = useState(false);
 
-  // Framer Motion scroll progress for the top bar
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -47,77 +133,53 @@ export default function Navbar() {
     restDelta: 0.001,
   });
 
-  // Scroll spy: set active link when section in view
   useEffect(() => {
-    // ⭐️ FIX 1: Set mounted to true on the client
     setMounted(true);
 
-    // The height of the fixed/sticky navbar container + some padding
-    const NAVBAR_HEIGHT = 80; // Estimate: top-4 + padding/height of the bar itself
+    const NAVBAR_HEIGHT = 80;
 
     const onScroll = () => {
-      // --- Scroll Spy Logic ---
-      // We want to detect which section's top is closest to the NAVBAR_HEIGHT
       const topOffset = NAVBAR_HEIGHT;
       const current = NAV_LINKS.map((l) => l.id).find((id) => {
         const el = document.getElementById(id);
         if (!el) return false;
-        // Check if the element's top is just above or at the offset line.
         const rect = el.getBoundingClientRect();
         return rect.top <= topOffset && rect.bottom >= topOffset;
       });
 
-      // Fallback for when no section is at the exact offset (e.g., at the very bottom)
-      if (current) {
-        setActive(current);
-      } else {
-        // Find the topmost visible section if we're scrolling up or down quickly
-        const firstVisible = NAV_LINKS.slice() // copy the array
-          .reverse() // check from bottom up
-          .find((l) => {
-            const el = document.getElementById(l.id);
-            if (!el) return false;
-            const rect = el.getBoundingClientRect();
-            // Check if the section is on the screen and its top is within 50px of the viewport top
-            return rect.top < window.innerHeight / 2;
-          });
+      if (current) setActive(current);
+      else {
+        const firstVisible = NAV_LINKS.slice().reverse().find((l) => {
+          const el = document.getElementById(l.id);
+          if (!el) return false;
+          const rect = el.getBoundingClientRect();
+          return rect.top < window.innerHeight / 2;
+        });
         if (firstVisible) setActive(firstVisible.id);
       }
 
-      // --- Hide on Scroll Logic ---
       const st = window.scrollY || 0;
-      // Use 150px scroll threshold before hiding
-      if (st > lastScroll.current && st > 150) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
+      if (st > lastScroll.current && st > 150) setHidden(true);
+      else setHidden(false);
       lastScroll.current = st;
     };
 
-    // Add throttle/debounce in a real app, but for a simple site, this is fine
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); // initial check
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      // Use a custom offset for scrolling, aligning it below the sticky header
-      const y = el.getBoundingClientRect().top + window.scrollY - 70; // 70px offset
+      const y = el.getBoundingClientRect().top + window.scrollY - 70;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
     setOpen(false);
   };
 
-  // Helper function to render the theme icon (prevents repetition)
   const renderThemeToggle = () => {
-    if (!mounted) {
-      // Return a placeholder on the server to prevent layout shift
-      return <Sun size={18} className="invisible" />;
-    }
-
+    if (!mounted) return <Sun size={18} className="invisible" />;
     return (
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
@@ -135,93 +197,53 @@ export default function Navbar() {
 
   return (
     <>
-      {/* tiny progress bar when scrolling */}
       <motion.div
         className="fixed left-0 top-0 h-[3px] z-[999] origin-left bg-gradient-to-r from-primary to-indigo-400"
-        style={{ scaleX }} // Use Framer Motion's scaleX spring
+        style={{ scaleX }}
       />
 
       <AnimatePresence>
         {!hidden && (
           <motion.nav
             ref={navRef}
-            initial={{ y: -60, opacity: 0 }} // Increased initial offset for smoother entry
+            initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -60, opacity: 0 }}
-            // Smoother transition: a bit more stiffness/damping
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="sticky top-4 z-[50] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" // z-index reduced slightly
-            aria-label="Main navigation"
+            className="sticky top-4 z-[50] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
           >
-            <div
-              className="rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-black/60 border border-border/80 transition-shadow duration-300"
-              style={{ boxShadow: "0 6px 20px rgba(2,6,23,0.1)" }} // Slightly darker shadow
-            >
-              <div className="flex items-center justify-between gap-4 px-4 py-2.5 sm:px-6"> {/* py-2.5 for better vertical centering */}
-                {/* LOGO / BRAND */}
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => scrollTo("home")}
-                    // Removed extra padding on the button, relying on inner elements
-                    className="inline-flex items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    aria-label="Go to home"
-                  >
-                    {/* Logo mark - ensure this is vertically centered with the text */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center text-white text-base font-semibold shrink-0">
-                        MS
-                      </div>
-                      <span className="hidden md:inline-block font-semibold text-base whitespace-nowrap">
-                        Madhav Semwal
-                      </span>
-                    </div>
-                  </button>
-                </div>
-
-                {/* CENTER LINKS + SEARCH (desktop) */}
-                <div className="hidden md:flex md:items-center md:gap-8"> {/* Increased gap for more breathing room */}
-                  {/* NAV LINKS */}
+            <div className="rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-black/60 border border-border/80 transition-shadow duration-300 shadow-md">
+              <div className="flex items-center justify-between gap-4 px-4 py-2.5 sm:px-6">
+                {/* NAV LINKS (desktop) */}
+                <div className="hidden md:flex md:items-center md:gap-8">
                   <ul role="list" className="flex items-center gap-1">
-                    {NAV_LINKS.map((link) => {
-                      const isActive = active === link.id;
-                      return (
-                        <li key={link.id}>
-                          <button
-                            onClick={() => scrollTo(link.id)}
-                            className={`relative px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                              isActive
-                                ? "text-primary bg-primary/10 dark:bg-primary/20" // Active background for better visual
-                                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                    {NAV_LINKS.map((link) => (
+                      <li key={link.id}>
+                        <button
+                          onClick={() => scrollTo(link.id)}
+                          className={`relative px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                            active === link.id
+                              ? "text-primary bg-primary/10 dark:bg-primary/20"
+                              : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                          }`}
+                        >
+                          {link.label}
+                          <span
+                            aria-hidden
+                            className={`absolute left-0 right-0 -bottom-0.5 h-[2px] rounded-full transition-all duration-300 ${
+                              active === link.id ? "bg-primary" : "bg-transparent"
                             }`}
-                          >
-                            {link.label}
-                            {/* animated underline (less prominent now with the background) */}
-                            <span
-                              aria-hidden
-                              className={`absolute left-0 right-0 -bottom-0.5 h-[2px] rounded-full transition-all duration-300 ${
-                                isActive ? "bg-primary" : "bg-transparent"
-                              }`}
-                            />
-                          </button>
-                        </li>
-                      );
-                    })}
+                          />
+                        </button>
+                      </li>
+                    ))}
                   </ul>
-
-                  {/* separator */}
                   <Separator className="h-6 w-px bg-border/70" orientation="vertical" />
-
-                  {/* Search (non-blocking) */}
-                  {/* Reduced search bar width slightly and ensured perfect vertical alignment */}
                   <div className="relative flex items-center">
-                    <label htmlFor="nav-search" className="sr-only">
-                      Search projects
-                    </label>
                     <Input
                       id="nav-search"
                       placeholder="Search projects, posts..."
-                      className="w-[280px] h-9 rounded-lg pl-3 pr-8 text-sm bg-background" // Added bg-background for consistency
-                      // You can wire onChange for live-search
+                      className="w-[280px] h-9 rounded-lg pl-3 pr-8 text-sm bg-background"
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
                       <Search size={16} className="text-muted-foreground" />
@@ -229,15 +251,10 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* ACTIONS (right) */}
-                <div className="flex items-center gap-2 sm:gap-3"> {/* Adjusted gaps */}
-                  {/* CTA */}
+                {/* RIGHT ACTIONS */}
+                <div className="flex items-center gap-2 sm:gap-3">
                   <div className="hidden sm:block">
-                    {/* Changed to a proper <a> tag inside Button with target="_blank" */}
-                    <Button
-                      asChild
-                      className="px-3 py-2 text-sm"
-                    >
+                    <Button asChild className="px-3 py-2 text-sm">
                       <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
                         <ExternalLink size={16} className="mr-2" />
                         Resume
@@ -245,14 +262,16 @@ export default function Navbar() {
                     </Button>
                   </div>
 
-                  {/* Theme toggle (Desktop) */}
+                  {/* GitHub Menu */}
+                  <GitHubMenu />
+
+                  {/* Theme toggle */}
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                     aria-label="Toggle theme"
                   >
-                    {/* ⭐️ FIX 1: Use the conditional rendering helper */}
                     {renderThemeToggle()}
                   </Button>
 
@@ -260,8 +279,7 @@ export default function Navbar() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="shrink-0" aria-label="Open user menu">
-                        <Avatar className="w-8 h-8 border-2 border-primary/50 dark:border-primary/30"> {/* Added border for emphasis */}
-                          {/* ⭐️ FIX 2: Corrected Image path and used Next/Image component */}
+                        <Avatar className="w-8 h-8 border-2 border-primary/50 dark:border-primary/30">
                           <Image
                             alt="avatar"
                             src="/avatar.png"
@@ -272,10 +290,9 @@ export default function Navbar() {
                         </Avatar>
                       </Button>
                     </DropdownMenuTrigger>
-
                     <DropdownMenuContent align="end" className="w-56">
                       <div className="px-3 py-2">
-                        <p className="text-sm font-semibold">Madhav Semwal</p> {/* Increased font-weight */}
+                        <p className="text-sm font-semibold">Madhav Semwal</p>
                         <p className="text-xs text-muted-foreground">Full-Stack Developer</p>
                       </div>
                       <Separator />
@@ -289,7 +306,7 @@ export default function Navbar() {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  {/* Mobile menu trigger */}
+                  {/* Mobile menu */}
                   <div className="md:hidden">
                     <Sheet open={open} onOpenChange={setOpen}>
                       <SheetTrigger asChild>
@@ -297,37 +314,34 @@ export default function Navbar() {
                           <Menu size={18} />
                         </Button>
                       </SheetTrigger>
-
-                      <SheetContent side="right" className="w-full max-w-xs p-6"> {/* Switched to 'right' and max-w-xs for a common design pattern */}
+                      <SheetContent side="right" className="w-full max-w-xs p-6">
                         <div className="flex flex-col gap-4">
-                          {/* Header section (Logo and Close button) */}
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                {/* ⭐️ FIX 3: Corrected Mobile Sheet Header to display avatar image */}
-                                <Avatar className="w-9 h-9 border-2 border-primary/50 dark:border-primary/30 shrink-0">
-                                    <Image
-                                        alt="avatar"
-                                        src="/avatar.png"
-                                        width={36}
-                                        height={36}
-                                        className="object-cover"
-                                    />
-                                </Avatar>
+                              <Avatar className="w-9 h-9 border-2 border-primary/50 dark:border-primary/30 shrink-0">
+                                <Image
+                                  alt="avatar"
+                                  src="/avatar.png"
+                                  width={36}
+                                  height={36}
+                                  className="object-cover"
+                                />
+                              </Avatar>
                               <div>
                                 <p className="font-semibold text-sm">Madhav Semwal</p>
                                 <p className="text-xs text-muted-foreground">Full-Stack Developer</p>
                               </div>
                             </div>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" aria-label="Close menu">
-                                    <X size={18} />
-                                </Button>
+                              <Button variant="ghost" size="icon" aria-label="Close menu">
+                                <X size={18} />
+                              </Button>
                             </SheetTrigger>
                           </div>
-                          
+
                           <Separator />
 
-                          <nav aria-label="Mobile navigation" className="flex flex-col gap-1"> {/* Reduced gap */}
+                          <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
                             {NAV_LINKS.map((l) => (
                               <button
                                 key={l.id}
@@ -344,20 +358,22 @@ export default function Navbar() {
                           <Separator />
 
                           <div className="space-y-3">
-                            <Button asChild className="w-full" variant="secondary"> {/* Secondary variant is a nice touch for action in a menu */}
+                            <Button asChild className="w-full" variant="secondary">
                               <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
                                 Download Resume <ExternalLink size={16} className="ml-2" />
                               </a>
                             </Button>
 
                             <div className="flex items-center justify-between">
-                                <a href="mailto:madhavsemwalofficial@gmail.com" className="text-sm underline underline-offset-4 text-muted-foreground hover:text-foreground transition-colors">
-                                    Email me
-                                </a>
-                                <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="shrink-0">
-                                    {/* ⭐️ FIX 1: Use the conditional rendering helper */}
-                                    {renderThemeToggle()}
-                                </Button>
+                              <a
+                                href="mailto:madhavsemwalofficial@gmail.com"
+                                className="text-sm underline underline-offset-4 text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                Email me
+                              </a>
+                              <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="shrink-0">
+                                {renderThemeToggle()}
+                              </Button>
                             </div>
                           </div>
                         </div>

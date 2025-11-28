@@ -116,7 +116,69 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* FIXED + RESCALED VERSION */
+/* Background sits behind everything without being oversized */
+
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.35;
+  /* not too transparent now */
+  transform: scale(0.55);
+  /* reduced size */
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: -90%;
+  /* reduced overshoot */
+  rotate: -45deg;
+  background: #000000;
+  background-image: radial-gradient(4px 100px at 0px 235px,
+      rgb(255, 140, 17),
+      #0000),
+    radial-gradient(4px 100px at 300px 235px, rgb(255, 119, 0), #884e2800),
+    radial-gradient(1.5px 1.5px at 150px 117.5px,
+      rgb(255, 144, 9) 100%,
+      #0000 150%),
+    radial-gradient(4px 100px at 0px 252px, rgb(156, 14, 137), #0000),
+    radial-gradient(4px 100px at 300px 252px, rgb(23, 41, 206), #0000),
+    radial-gradient(1.5px 1.5px at 150px 126px,
+      rgb(247, 102, 18) 100%,
+      #0000 150%),
+    radial-gradient(4px 100px at 0px 150px, rgb(249, 121, 16), #0000),
+    radial-gradient(4px 100px at 300px 150px, rgb(255, 128, 18), #0000),
+    radial-gradient(1.5px 1.5px at 150px 75px,
+      rgb(255, 116, 10) 100%,
+      #0000 150%),
+    radial-gradient(4px 100px at 0px 253px, rgb(249, 137, 17), #0000),
+    radial-gradient(4px 100px at 300px 253px, rgb(248, 107, 14), #0000),
+    radial-gradient(1.5px 1.5px at 150px 126.5px,
+      rgb(252, 129, 14) 100%,
+      #0000 150%);
+  background-size: 250px 200px;
+  /* smaller pattern */
+  animation: hi 80s linear infinite;
+  /* faster + smoother */
+  opacity: 0.6;
+  /* visible but not dominating */
+}
+
+@keyframes hi {
+  0% {
+    background-position: 0px 0px, 3px 0px, 150px 50px;
+  }
+
+  100% {
+    background-position: 0px 4000px, 3px 4000px, 150px 4100px;
   }
 }

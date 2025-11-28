@@ -57,46 +57,43 @@ export default function About() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
-        <Card className="rounded-2xl shadow-xl border-2 border-border/80 overflow-hidden">
+        <Card className="rounded-2xl shadow-lg border border-border bg-background/95">
           <CardContent className="p-0">
-            <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-border/80">
-              {/* LEFT — Biography */}
-              <div className="lg:col-span-2 p-6 sm:p-8 lg:p-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-border">
+              {/* LEFT BIO */}
+              <div className="lg:col-span-2 p-6 sm:p-8 lg:p-10 bg-background">
                 <h3 className="text-2xl font-bold mb-4 text-primary">
-                  Full-Stack & Generative AI
+                  Full-Stack & Generative AI Developer
                 </h3>
 
-                <div className="space-y-4 text-base sm:text-lg leading-relaxed text-foreground/90">
+                <div className="space-y-5 text-base sm:text-lg leading-relaxed text-foreground/90">
                   <p>
-                    I'm a motivated{" "}
+                    I'm a passionate{" "}
                     <span className="font-semibold">Full-Stack Developer</span>{" "}
-                    specialized in React, Next.js, Node.js and TypeScript. I
-                    build fast, scalable and user-friendly applications using
-                    SQL (PostgreSQL) and NoSQL (MongoDB).
+                    skilled in React, Next.js, Node.js, and TypeScript. I build
+                    performant, scalable, and polished applications using modern
+                    tooling and databases like PostgreSQL and MongoDB.
                   </p>
 
-                  <Separator className="my-4 lg:hidden" />
+                  <Separator className="lg:hidden my-5" />
 
                   <p>
-                    I’m deeply passionate about{" "}
-                    <span className="font-semibold">Generative AI</span>,
-                    working with prompt engineering, OpenAI & Gemini APIs,
-                    LangChain, and automation-driven workflows to create
-                    intelligent next-gen tools.
+                    My interest in{" "}
+                    <span className="font-semibold">Generative AI</span> drives
+                    me to work with OpenAI, Gemini APIs, LLM automation,
+                    LangChain, and AI-first product development.
                   </p>
 
                   <p className="font-semibold text-sm text-muted-foreground">
-                    I keep exploring new technologies, improving backend scaling
-                    skills, and contributing to open-source.
+                    I love experimenting, learning new tools, and contributing to
+                    real-world impactful solutions.
                   </p>
                 </div>
               </div>
 
-              {/* RIGHT — Key Facts */}
-              <div className="lg:col-span-1 p-6 sm:p-8 lg:p-10 bg-secondary/30">
-                <h3 className="text-xl font-bold mb-6 text-foreground">
-                  Key Highlights
-                </h3>
+              {/* RIGHT FACTS */}
+              <div className="lg:col-span-1 p-6 sm:p-8 lg:p-10 bg-muted/40">
+                <h3 className="text-xl font-bold mb-6">Key Highlights</h3>
 
                 <div className="space-y-6">
                   {keyFacts.map((fact, index) => (
