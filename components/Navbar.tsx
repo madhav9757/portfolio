@@ -28,9 +28,22 @@ const NAV_LINKS = [
   { id: "contact", label: "Contact" },
 ];
 
+// -------------------------
+// GitHub Repo Type
+// -------------------------
+type Repo = {
+  id: number;
+  name: string;
+  description: string | null;
+  html_url: string;
+  stargazers_count: number;
+  forks_count: number;
+  fork: boolean;
+};
+
 // --- GitHub Menu Component ---
 function GitHubMenu() {
-  const [repos, setRepos] = useState<any[] | null>(null);
+  const [repos, setRepos] = useState<Repo[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,12 +52,12 @@ function GitHubMenu() {
         if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
         return res.json();
       })
-      .then((data: any[]) => {
-        const filtered = data.filter((r) => !r.fork).map((r) => ({
-          name: r.name,
-          html_url: r.html_url,
-          description: r.description,
-        }));
+      .then((data: Repo[]) => {
+        const filtered = data
+          .filter((r) => !r.fork)
+          .map((r) => ({
+            ...r,
+          }));
         setRepos(filtered);
       })
       .catch((err) => {
@@ -81,7 +94,7 @@ function GitHubMenu() {
           {repos && repos.length > 0 && (
             <ul className="space-y-2">
               {repos.map((repo) => (
-                <li key={repo.name}>
+                <li key={repo.id}>
                   <a
                     href={repo.html_url}
                     target="_blank"
@@ -149,12 +162,14 @@ export default function Navbar() {
 
       if (current) setActive(current);
       else {
-        const firstVisible = NAV_LINKS.slice().reverse().find((l) => {
-          const el = document.getElementById(l.id);
-          if (!el) return false;
-          const rect = el.getBoundingClientRect();
-          return rect.top < window.innerHeight / 2;
-        });
+        const firstVisible = NAV_LINKS.slice()
+          .reverse()
+          .find((l) => {
+            const el = document.getElementById(l.id);
+            if (!el) return false;
+            const rect = el.getBoundingClientRect();
+            return rect.top < window.innerHeight / 2;
+          });
         if (firstVisible) setActive(firstVisible.id);
       }
 
@@ -197,6 +212,7 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Scroll progress bar */}
       <motion.div
         className="fixed left-0 top-0 h-[3px] z-[999] origin-left bg-gradient-to-r from-primary to-indigo-400"
         style={{ scaleX }}
@@ -238,17 +254,6 @@ export default function Navbar() {
                       </li>
                     ))}
                   </ul>
-                  <Separator className="h-6 w-px bg-border/70" orientation="vertical" />
-                  <div className="relative flex items-center">
-                    <Input
-                      id="nav-search"
-                      placeholder="Search projects, posts..."
-                      className="w-[280px] h-9 rounded-lg pl-3 pr-8 text-sm bg-background"
-                    />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <Search size={16} className="text-muted-foreground" />
-                    </div>
-                  </div>
                 </div>
 
                 {/* RIGHT ACTIONS */}
@@ -274,37 +279,6 @@ export default function Navbar() {
                   >
                     {renderThemeToggle()}
                   </Button>
-
-                  {/* User avatar dropdown */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="shrink-0" aria-label="Open user menu">
-                        <Avatar className="w-8 h-8 border-2 border-primary/50 dark:border-primary/30">
-                          <Image
-                            alt="avatar"
-                            src="/avatar.png"
-                            width={32}
-                            height={32}
-                            className="object-cover"
-                          />
-                        </Avatar>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <div className="px-3 py-2">
-                        <p className="text-sm font-semibold">Madhav Semwal</p>
-                        <p className="text-xs text-muted-foreground">Full-Stack Developer</p>
-                      </div>
-                      <Separator />
-                      <DropdownMenuItem onClick={() => window.open("https://github.com/madhav9757", "_blank")}>
-                        GitHub <ExternalLink size={14} className="ml-auto opacity-70" />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => window.open("https://linkedin.com/in/madhavsemwal", "_blank")}>
-                        LinkedIn <ExternalLink size={14} className="ml-auto opacity-70" />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => scrollTo("contact")}>Contact</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
 
                   {/* Mobile menu */}
                   <div className="md:hidden">
