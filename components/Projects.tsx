@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, GitFork, ExternalLink, Briefcase } from "lucide-react";
+import Link from "next/link";
 
 type Repo = {
   id: number;
@@ -15,7 +16,7 @@ type Repo = {
   forks_count: number;
   html_url: string;
   topics?: string[];
-  fork: boolean; // <-- Add this line
+  fork: boolean;
 };
 
 export default function Projects() {
@@ -33,8 +34,9 @@ export default function Projects() {
       .then((data: Repo[]) => {
         const filtered = data
           .filter((r) => !r.fork)
-          .sort((a, b) => b.stargazers_count - a.stargazers_count); // optional: sort by stars
-        setRepos(filtered);
+          .sort((a, b) => b.stargazers_count - a.stargazers_count);
+
+        setRepos(filtered.slice(0, 3)); // ⬅ only first 3 repos
       })
       .catch((err) => {
         console.error(err);
@@ -44,21 +46,17 @@ export default function Projects() {
 
   if (error)
     return (
-      <section
-        id="projects"
-        className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-      >
+      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-center text-red-500">{error}</p>
       </section>
     );
 
   if (!repos)
     return (
-      <section
-        id="projects"
-        className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-      >
-        <p className="text-center text-muted-foreground">Loading projects...</p>
+      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p className="text-center text-muted-foreground">
+          Loading projects...
+        </p>
       </section>
     );
 
@@ -78,10 +76,10 @@ export default function Projects() {
           <Briefcase size={16} /> My GitHub Projects
         </span>
         <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
-          Explore My Repositories
+          Featured Projects
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          All active public repositories from my GitHub account.
+          A few of my best open-source projects. Explore all for more!
         </p>
       </motion.div>
 
@@ -106,39 +104,32 @@ export default function Projects() {
                   {repo.description || "No description provided."}
                 </p>
 
-                {/* Tech stack badges (optional: show topics) */}
                 <div className="flex flex-wrap gap-2">
-                  {repo.topics &&
-                    repo.topics.map((topic) => (
-                      <Badge
-                        key={topic}
-                        variant="outline"
-                        className="text-xs px-2 py-1 font-medium border-primary/40 text-foreground"
-                      >
-                        {topic}
-                      </Badge>
-                    ))}
+                  {repo.topics?.map((topic) => (
+                    <Badge
+                      key={topic}
+                      variant="outline"
+                      className="text-xs px-2 py-1 font-medium border-primary/40 text-foreground"
+                    >
+                      {topic}
+                    </Badge>
+                  ))}
                 </div>
 
-                {/* Git stats */}
                 <div className="flex items-center gap-3 pt-2 border-t border-border/30">
                   <Badge className="flex items-center gap-1 text-xs bg-black/10 text-foreground">
                     <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
                     {repo.stargazers_count}
                   </Badge>
+
                   <Badge className="flex items-center gap-1 text-xs bg-black/10 text-foreground">
                     <GitFork className="w-3 h-3" />
                     {repo.forks_count}
                   </Badge>
                 </div>
 
-                {/* Buttons */}
                 <div className="flex gap-3 mt-auto">
-                  <Button
-                    asChild
-                    className="flex-1 font-semibold"
-                    variant="default"
-                  >
+                  <Button asChild className="flex-1 font-semibold">
                     <a
                       href={repo.html_url}
                       target="_blank"
@@ -152,6 +143,16 @@ export default function Projects() {
             </Card>
           </motion.div>
         ))}
+      </div>
+
+      {/* View All Button */}
+      <div className="text-center mt-12">
+        <Button
+          asChild
+          className="px-8 py-6 text-lg font-semibold rounded-full shadow-md hover:shadow-lg"
+        >
+          <Link href="/projects">View All Projects →</Link>
+        </Button>
       </div>
     </section>
   );

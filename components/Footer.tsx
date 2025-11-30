@@ -1,81 +1,154 @@
 "use client";
 
-import { motion } from "framer-motion"; // Import motion
-import { Github, Linkedin, Mail, Heart, Bolt } from "lucide-react"; // Import Bolt
-import { Separator } from "@/components/ui/separator";
+import { motion, cubicBezier } from "framer-motion";
+import { Github, Linkedin, Mail, Heart } from "lucide-react";
+import type { LucideIcon } from "lucide-react"; // Import type for better type safety
 
-export default function Footer() {
+// --- DATA ---
+interface SocialLink {
+  icon: LucideIcon;
+  name: string;
+  href: string;
+  a11yLabel: string; // Added a11yLabel
+}
+
+const socialLinks: SocialLink[] = [
+  { 
+    icon: Github, 
+    name: "GitHub", 
+    href: "https://github.com/yourusername",
+    a11yLabel: "Link to GitHub profile"
+  },
+  { 
+    icon: Linkedin, 
+    name: "LinkedIn", 
+    href: "https://linkedin.com/in/yourusername",
+    a11yLabel: "Link to LinkedIn profile"
+  },
+  { 
+    icon: Mail, 
+    name: "Email", 
+    href: "mailto:your@email.com",
+    a11yLabel: "Send an email"
+  },
+];
+
+interface Technology {
+  name: string;
+  href: string;
+}
+
+const technologies: Technology[] = [
+  { name: "Next.js", href: "https://nextjs.org/" },
+  { name: "Framer Motion", href: "https://www.framer.com/motion/" },
+  // Optional: Add another one to test the separator
+  // { name: "Tailwind CSS", href: "https://tailwindcss.com/" }, 
+];
+
+// --- ANIMATION VARIANTS ---
+const fadeUp = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: cubicBezier(0.25, 0.46, 0.45, 0.94) },
+  },
+};
+
+const heartBeat = {
+  // A small, subtle beat/pulse on initial view
+  initial: { scale: 1 },
+  animate: {
+    scale: [1, 1.05, 1], // Pulse effect
+    transition: { 
+      duration: 1.5, 
+      ease: cubicBezier(0.42, 0, 0.58, 1),
+      repeatType: "loop" as const,
+      repeat: Infinity, 
+      repeatDelay: 3 
+    },
+  },
+};
+
+
+// --- COMPONENT ---
+interface FooterProps {
+  developerName?: string;
+}
+
+export default function Footer({ developerName = "Your Name" }: FooterProps) {
   const currentYear = new Date().getFullYear();
-
-  // Framer Motion variants for the overall footer
-  const footerVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2 } },
-  };
 
   return (
     <motion.footer
-      className="py-10 md:py-12 border-t border-border/50" // Used border-t for a cleaner look than a separate Separator
-      variants={footerVariants}
+      variants={fadeUp}
       initial="hidden"
+      // Added margin to viewport for earlier trigger on long pages
+      viewport={{ once: true, margin: "0px 0px -50px 0px" }} 
       whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      className="py-10 border-t border-border bg-background"
     >
-      <div className="container mx-auto px-6 max-w-7xl">
+      <div className="mx-auto max-w-6xl px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
 
-          {/* Copyright & Built With */}
-          <div className="flex flex-col items-center md:items-start space-y-2">
-            
-            {/* Built With Message */}
-            <p className="text-sm font-medium text-foreground flex items-center gap-1.5">
-              <Heart size={16} className="text-red-500 fill-red-500/80" />
-              Built with
-              <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-semibold">
-                Next.js
-              </a> 
-              & 
-              <a href="https://www.framer.com/motion/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-semibold">
-                Framer Motion
-              </a>
-            </p>
+          {/* LEFT SECTION */}
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {/* Heartbeat animation added */}
+              <motion.span variants={heartBeat} initial="initial" animate="animate">
+                <Heart size={14} className="text-red-500 fill-red-500/70" />
+              </motion.span>
+              
+              <span>Built with</span>
 
-            {/* Copyright */}
-            <p className="text-xs text-muted-foreground tracking-wide">
-              © {currentYear} John Doe. All rights reserved. | <span className="font-semibold text-primary/80">Full-Stack Developer</span>
+              {technologies.map((tech, i) => (
+                <a
+                  key={tech.name}
+                  href={tech.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-primary hover:underline"
+                >
+                  {tech.name}
+                  {/* Better separator logic: only add separator if it's NOT the last item */}
+                  {i < technologies.length - 1 && <span className="mx-1 text-muted-foreground">&</span>}
+                </a>
+              ))}
+            </div>
+
+            <p className="text-xs text-muted-foreground text-center md:text-left">
+              &copy; {currentYear}{" "}
+              <span className="font-semibold text-foreground">{developerName}</span>. All rights reserved.
             </p>
           </div>
 
-          {/* Social Icons */}
-          <div className="flex items-center gap-6">
-            <a
-              href="https://github.com/yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors transform hover:scale-110 duration-200"
-              aria-label="GitHub"
-            >
-              <Github size={22} /> {/* Increased icon size */}
-            </a>
+          {/* SOCIALS */}
+          <ul className="flex items-center gap-6">
+            {socialLinks.map((item) => {
+              // Destructure for cleaner access
+              const { icon: Icon, name, href, a11yLabel } = item; 
+              return (
+                <motion.li
+                  key={name} // Use name as key, or better, use a unique ID if available
+                  whileHover={{ scale: 1.15 }} // Slightly increased hover scale
+                  whileTap={{ scale: 0.9 }} // Slightly increased tap/click scale
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }} // Added transition for a snappier feel
+                >
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    // Accessibility enhancement: Add aria-label
+                    aria-label={a11yLabel} 
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Icon size={24} /> {/* Increased icon size for better visibility/click target */}
+                  </a>
+                </motion.li>
+              );
+            })}
+          </ul>
 
-            <a
-              href="https://linkedin.com/in/yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-blue-500 transition-colors transform hover:scale-110 duration-200" // Added specific color hover
-              aria-label="LinkedIn"
-            >
-              <Linkedin size={22} />
-            </a>
-
-            <a
-              href="mailto:john.doe@example.com"
-              className="text-muted-foreground hover:text-green-500 transition-colors transform hover:scale-110 duration-200" // Added specific color hover
-              aria-label="Email"
-            >
-              <Mail size={22} />
-            </a>
-          </div>
         </div>
       </div>
     </motion.footer>
