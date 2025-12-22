@@ -2,69 +2,113 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import GitHubMenu from "../GitHubMenu";
-import ThemeToggle from "../ThemeToggle";
-import { NAV_LINKS } from "@/lib/constants";
+import { Terminal, FileText } from "lucide-react";
 
-interface DesktopNavProps {
-  active: string;
-  scrollToSection: (id: string) => void;
-  mounted: boolean;
-}
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+import ThemeToggle from "../ThemeToggle";
+import GitHubMenu from "../GitHubMenu";
+import { NAV_LINKS } from "@/lib/constants";
 
 export default function DesktopNav({
   active,
   scrollToSection,
   mounted,
-}: DesktopNavProps) {
-  return (
-    <div className="bg-white/70 dark:bg-black/60 backdrop-blur-xl border border-border rounded-2xl shadow-lg w-full flex items-center justify-between px-3 sm:px-4 md:px-6 py-2.5 sm:py-3">
-      {/* Centered nav links */}
-      <nav className="flex-1 flex justify-center">
-        <ul className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium">
-          {NAV_LINKS.map((link) => (
-            <li key={link.id}>
-              <button
-                onClick={() => scrollToSection(link.id)}
-                aria-current={active === link.id ? "page" : undefined}
-                className={`relative px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary ${
-                  active === link.id
-                    ? "text-primary font-semibold bg-primary/10 dark:bg-primary/20"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                }`}
-              >
-                {link.label}
-                {active === link.id && (
-                  <motion.span
-                    layoutId="activeTab"
-                    className="absolute -bottom-0.5 sm:-bottom-1 left-1/2 transform -translate-x-1/2 w-4 sm:w-6 h-[2px] bg-primary rounded-full"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
+}: {
+  active: string;
+  scrollToSection: (id: string) => void;
+  mounted: boolean;
+}) {
+  if (!mounted) return null;
 
-      {/* Right actions */}
-      <div className="flex items-center gap-1 sm:gap-2">
-        <Button
-          asChild
-          variant="default"
-          size="sm"
-          className="hidden sm:flex font-medium gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm transition"
-        >
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-            Resume
-          </a>
-        </Button>
-        <div className="hidden xl:flex">
-          <GitHubMenu />
+  return (
+    <TooltipProvider delayDuration={0}>
+      <div className="bg-white/80 dark:bg-zinc-950/90 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl flex items-center justify-between px-4 py-2 w-full">
+        {/* Left: Brand Icon */}
+        <div className="flex items-center">
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: 5 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2 bg-primary/10 rounded-xl text-primary border border-primary/20"
+          >
+            <Terminal size={20} />
+          </motion.div>
         </div>
-        <ThemeToggle />
+
+        {/* Center: Navigation Links */}
+        <nav className="flex items-center gap-1 bg-secondary/20 p-1 rounded-xl border border-border/20">
+          {NAV_LINKS.map((link) => (
+            <button
+              key={link.id}
+              onClick={() => scrollToSection(link.id)}
+              className={`relative px-4 py-2 text-sm font-medium transition-all rounded-lg ${
+                active === link.id
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-primary/10"
+              }`}
+            >
+              <span className="relative z-10">{link.label}</span>
+              {active === link.id && (
+                <motion.div
+                  layoutId="active-pill"
+                  className="absolute inset-0 bg-background/70 shadow-sm rounded-md"
+                  transition={{ type: "spring", duration: 0.5 }}
+                />
+              )}
+            </button>
+          ))}
+        </nav>
+
+        {/* Right: Action Cluster */}
+        <div className="flex items-center gap-3 relative">
+          {/* Compact Action Container */}
+          <div className="flex items-center gap-1.5 bg-muted/50 p-1 rounded-lg border overflow-visible">
+            {/* Compact Theme Toggle */}
+            <ThemeToggle />
+
+            <Separator orientation="vertical" className="h-5" />
+
+            {/* GitHub Menu */}
+            <GitHubMenu />
+          </div>
+
+          {/* Resume Button with Animation */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                asChild
+                variant="default"
+                size="sm"
+                className="relative group h-10 px-4 rounded-xl font-bold overflow-hidden"
+              >
+                <a href="/resume.pdf" target="_blank">
+                  <span className="relative z-10 flex items-center gap-2">
+                    <FileText size={16} />
+                    RESUME
+                  </span>
+                  <motion.div
+                    animate={{ x: ["-100%", "100%"] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 3,
+                      ease: "linear",
+                    }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent w-full h-full"
+                  />
+                </a>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Download CV</TooltipContent>
+          </Tooltip>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }

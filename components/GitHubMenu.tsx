@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Github as GitHubIcon, ExternalLink, Star, GitFork } from "lucide-react";
+import {
+  Github as GitHubIcon,
+  ExternalLink,
+  Star,
+  GitFork,
+  Activity,
+  Zap,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +18,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 type Repo = {
   id: number;
@@ -34,7 +45,6 @@ export default function GitHubMenu() {
         return res.json();
       })
       .then((data: Repo[]) => {
-        // Filter out forks and get top 5
         const filteredRepos = data.filter((r) => !r.fork).slice(0, 5);
         setRepos(filteredRepos);
         setIsLoading(false);
@@ -51,45 +61,46 @@ export default function GitHubMenu() {
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-xl hover:bg-secondary/60 transition h-9 w-9 sm:h-10 sm:w-10"
+          className="rounded-xl hover:bg-secondary/60 transition h-10 w-10 flex items-center justify-center"
           aria-label="Open GitHub menu"
         >
-          <GitHubIcon size={16} className="sm:hidden" />
-          <GitHubIcon size={18} className="hidden sm:block" />
+          <GitHubIcon size={20} className="text-foreground" />
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"
-        className="w-[calc(100vw-2rem)] max-w-[320px] sm:w-80 bg-background border border-border rounded-xl shadow-xl p-0 overflow-hidden"
+        className="w-[calc(100vw-2rem)] max-w-[360px] sm:w-80 bg-background border border-border rounded-xl shadow-xl p-0 overflow-hidden"
         sideOffset={8}
       >
         {/* Header */}
-        <div className="p-3 sm:p-4 bg-muted/40 flex items-center gap-2 text-sm sm:text-base font-semibold">
-          <GitHubIcon size={16} className="sm:hidden" />
-          <GitHubIcon size={18} className="hidden sm:block" />
+        <div className="p-4 bg-muted/40 flex items-center gap-2 text-base font-semibold animate-fadeIn">
+          <GitHubIcon size={20} />
           <a
             href="https://github.com/madhav9757"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline truncate"
+            className="truncate hover:underline"
           >
             madhav9757
           </a>
         </div>
 
-        {/* Repo List */}
         <div className="max-h-[60vh] sm:max-h-80 overflow-y-auto">
-          {/* Error State */}
+          {/* Error */}
           {error && (
-            <div className="p-3 sm:p-4">
-              <p className="text-destructive text-xs sm:text-sm">{error}</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="p-4 text-destructive text-sm"
+            >
+              {error}
+            </motion.div>
           )}
 
-          {/* Loading State */}
+          {/* Loading */}
           {isLoading && !error && (
-            <div className="p-3 sm:p-4 flex flex-col gap-3">
+            <div className="p-4 flex flex-col gap-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="animate-pulse space-y-2">
                   <div className="h-4 bg-secondary rounded w-3/4"></div>
@@ -100,65 +111,70 @@ export default function GitHubMenu() {
             </div>
           )}
 
-          {/* Repos List */}
+          {/* Repo List */}
           {repos && !isLoading && (
             <div className="divide-y divide-border">
-              {repos.map((repo) => (
-                <a
-                  key={repo.id}
-                  href={repo.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block px-3 py-3 sm:px-4 sm:py-3.5 transition hover:bg-secondary/50 group"
-                >
-                  {/* Repo Name */}
-                  <div className="flex items-start justify-between gap-2 mb-1.5">
-                    <p className="font-semibold text-xs sm:text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                      {repo.name}
-                    </p>
-                    <ExternalLink 
-                      size={14} 
-                      className="flex-shrink-0 text-muted-foreground group-hover:text-primary transition-colors mt-0.5" 
-                    />
-                  </div>
+              <AnimatePresence>
+                {repos.map((repo) => (
+                  <motion.a
+                    key={repo.id}
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="block px-4 py-3 transition hover:bg-secondary/50 group rounded-md"
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <p className="font-semibold text-sm text-foreground group-hover:text-primary line-clamp-1">
+                        {repo.name}
+                      </p>
+                      <ExternalLink
+                        size={16}
+                        className="text-muted-foreground group-hover:text-primary transition-colors"
+                      />
+                    </div>
 
-                  {/* Description */}
-                  {repo.description ? (
-                    <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
-                      {repo.description}
-                    </p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground italic mb-2">
-                      No description
-                    </p>
-                  )}
-
-                  {/* Stats & Language */}
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    {repo.language && (
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-primary"></span>
-                        {repo.language}
-                      </span>
+                    {repo.description ? (
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                        {repo.description}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic mb-2">
+                        No description
+                      </p>
                     )}
-                    <span className="flex items-center gap-1">
-                      <Star size={12} />
-                      {repo.stargazers_count}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <GitFork size={12} />
-                      {repo.forks_count}
-                    </span>
-                  </div>
-                </a>
-              ))}
+
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      {repo.language && (
+                        <Badge variant="outline" className="flex items-center gap-1">
+                          <span
+                            className="w-2 h-2 rounded-full inline-block"
+                            style={{ backgroundColor: "#4ade80" }}
+                          ></span>
+                          {repo.language}
+                        </Badge>
+                      )}
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <Star size={12} /> {repo.stargazers_count}
+                      </Badge>
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <GitFork size={12} /> {repo.forks_count}
+                      </Badge>
+                      {repo.fork && <Badge variant="secondary">Forked</Badge>}
+                    </div>
+                  </motion.a>
+                ))}
+              </AnimatePresence>
             </div>
           )}
 
-          {/* Empty State */}
+          {/* Empty */}
           {repos && repos.length === 0 && !isLoading && (
-            <div className="p-6 text-center">
-              <p className="text-sm text-muted-foreground">No repositories found</p>
+            <div className="p-6 text-center text-muted-foreground text-sm">
+              No repositories found
             </div>
           )}
         </div>
@@ -170,11 +186,9 @@ export default function GitHubMenu() {
           href="https://github.com/madhav9757"
           target="_blank"
           rel="noopener noreferrer"
-          className="p-3 sm:p-4 flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-primary hover:underline hover:bg-secondary/30 transition"
+          className="p-4 flex items-center justify-center gap-2 text-sm font-medium text-primary hover:underline hover:bg-secondary/30 transition rounded-b-xl"
         >
-          View full GitHub 
-          <ExternalLink size={12} className="sm:hidden" />
-          <ExternalLink size={14} className="hidden sm:block" />
+          View full GitHub <ExternalLink size={16} />
         </a>
       </DropdownMenuContent>
     </DropdownMenu>
