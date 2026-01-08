@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, easeOut, easeInOut } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import * as React from "react";
+import Link from "next/link";
+import { motion, Variants } from "framer-motion";
 import {
   Code2,
   Database,
@@ -9,234 +10,214 @@ import {
   Layers,
   Sparkles,
   TrendingUp,
+  ArrowRight,
+  Terminal,
+  CheckCircle2,
 } from "lucide-react";
 
-const data = [
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const skills = [
   {
-    category: "Frontend",
+    title: "Frontend",
     icon: Code2,
-    items: ["React", "Next.js", "TypeScript", "TailwindCSS", "Framer Motion"],
-    color: "from-blue-500 to-cyan-500",
+    description: "Architecting performant, accessible web applications.",
+    stack: ["React", "Next.js", "TypeScript", "TailwindCSS"],
     level: 95,
+    color: "bg-blue-500",
   },
   {
-    category: "Backend",
+    title: "Backend",
     icon: Layers,
-    items: ["Node.js", "Express", "Python", "Django", "REST APIs"],
-    color: "from-green-500 to-emerald-500",
+    description: "Robust server-side logic and modular architecture.",
+    stack: ["Node.js", "Express", "Python", "Go"],
     level: 90,
+    color: "bg-emerald-500",
   },
   {
-    category: "Database",
+    title: "Database",
     icon: Database,
-    items: ["PostgreSQL", "MongoDB", "Redis", "Prisma", "Supabase"],
-    color: "from-purple-500 to-pink-500",
+    description: "Data modeling and query optimization.",
+    stack: ["PostgreSQL", "MongoDB", "Prisma", "Redis"],
     level: 85,
+    color: "bg-orange-500",
   },
   {
-    category: "AI & ML",
+    title: "AI Integration",
     icon: Sparkles,
-    items: ["OpenAI API", "Prompt Engineering", "LangChain", "Vector DBs"],
-    color: "from-orange-500 to-red-500",
+    description: "Leveraging LLMs and vector embeddings.",
+    stack: ["OpenAI", "LangChain", "Pinecone", "RAG"],
     level: 80,
+    color: "bg-purple-500",
   },
   {
-    category: "DevOps",
+    title: "Cloud & DevOps",
     icon: Wrench,
-    items: ["Git", "Docker", "AWS", "CI/CD", "Vercel"],
-    color: "from-indigo-500 to-blue-500",
+    description: "Automated deployment and cloud infrastructure.",
+    stack: ["Docker", "AWS", "CI/CD", "Terraform"],
     level: 75,
+    color: "bg-slate-500",
   },
   {
-    category: "Tools & More",
+    title: "Core Workflow",
     icon: TrendingUp,
-    items: ["Figma", "VS Code", "Postman", "Jest", "WebSockets"],
-    color: "from-pink-500 to-rose-500",
+    description: "Agile methodologies and testing patterns.",
+    stack: ["Git", "Jest", "Playwright", "Storybook"],
     level: 88,
+    color: "bg-pink-500",
   },
 ];
 
-const containerVariants = {
+const container: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: easeOut, // FIXED
-    },
+const item: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } 
   },
 };
 
 export default function Skills() {
   return (
-    <section className="py-16 relative">
-      {/* Animated Background */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.3, 1],
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: easeInOut, // FIXED
-          }}
-        />
+    <section className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32">
+      {/* Background Decorative Element */}
+      <div className="absolute inset-0 -z-10 flex justify-center overflow-hidden pointer-events-none">
+        <div className="w-[80rem] h-[30rem] flex-none opacity-20 [mask-image:radial-gradient(ellipse_at_center,white,transparent)] bg-[radial-gradient(circle_at_center,var(--primary)_0,transparent_70%)]" />
       </div>
 
-      {/* Heading */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: easeOut }}
-        className="text-center mb-12"
-      >
+      <div className="mb-16 flex flex-col items-start gap-4">
+        <Badge variant="outline" className="rounded-full border-primary/30 bg-primary/5 px-4 py-1 text-primary">
+          <Terminal className="mr-2 h-3.5 w-3.5" />
+          Technical Stack
+        </Badge>
+
+        <div className="flex flex-col md:flex-row md:items-end justify-between w-full gap-6">
+          <div className="max-w-2xl">
+            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4">
+              Expertise & Tools
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Consistently evolving with the ecosystem, I specialize in building 
+              end-to-end applications with a focus on type-safety and scalability.
+            </p>
+          </div>
+          <Button variant="outline" size="sm" className="hidden md:flex rounded-full">
+            Technical CV <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      <TooltipProvider delayDuration={100}>
         <motion.div
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+          variants={container}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
-          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            🛠️ Tech Stack
-          </span>
-        </motion.div>
-
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">
-          Skills & Technologies
-        </h2>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          A comprehensive toolkit for building modern, scalable applications
-        </p>
-      </motion.div>
-
-      {/* Skills Grid */}
-      <motion.div
-        className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-      >
-        {data.map((skill) => {
-          const Icon = skill.icon;
-          return (
-            <motion.div key={skill.category} variants={itemVariants}>
-              <Card className="rounded-2xl border-2 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group h-full overflow-hidden relative">
-                {/* Hover BG Gradient */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${skill.color} opacity-5`}
-                  />
-                </div>
-
-                <CardHeader className="relative">
-                  <div className="flex items-center gap-3 mb-2">
-                    <motion.div
-                      className={`p-2.5 rounded-xl bg-gradient-to-br ${skill.color}`}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring", stiffness: 400 }}
-                    >
-                      <Icon className="w-5 h-5 text-white" />
-                    </motion.div>
-
-                    <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">
-                      {skill.category}
-                    </CardTitle>
-                  </div>
-
-                  {/* Proficiency Bar */}
-                  <div className="mt-3">
-                    <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
-                      <span>Proficiency</span>
-                      <span className="font-semibold">{skill.level}%</span>
+          {skills.map((skill) => {
+            const Icon = skill.icon;
+            return (
+              <motion.div key={skill.title} variants={item}>
+                <Card className="group relative h-full overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm transition-all hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="cursor-help">
+                            <Badge variant="secondary" className="font-mono text-xs">
+                              {skill.level}%
+                            </Badge>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          Core Proficiency
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
 
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <motion.div
-                        className={`h-full bg-gradient-to-r ${skill.color} rounded-full`}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{
-                          duration: 1,
-                          delay: 0.2,
-                          ease: easeOut, // FIXED
-                        }}
-                      />
-                    </div>
-                  </div>
-                </CardHeader>
+                    <CardTitle className="text-xl">{skill.title}</CardTitle>
+                    <CardDescription className="text-sm leading-relaxed">
+                      {skill.description}
+                    </CardDescription>
+                  </CardHeader>
 
-                <CardContent className="relative">
-                  <ul className="flex flex-wrap gap-2">
-                    {skill.items.map((tech, i) => (
-                      <motion.li
-                        key={tech}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{
-                          delay: 0.3 + i * 0.05,
-                          type: "spring",
-                          stiffness: 200,
-                        }}
-                        whileHover={{ scale: 1.1, y: -2 }}
-                      >
-                        <span className="px-3 py-1.5 text-sm rounded-lg border-2 bg-card hover:bg-primary/10 hover:border-primary transition-all cursor-default font-medium shadow-sm">
+                  <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+                        <span>Proficiency</span>
+                        <span>Expert</span>
+                      </div>
+                      <Progress value={skill.level} className="h-1.5" />
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {skill.stack.map((tech) => (
+                        <div
+                          key={tech}
+                          className="flex items-center rounded-md border border-border/50 bg-background/50 px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+                        >
+                          <CheckCircle2 className="mr-1.5 h-3 w-3 text-primary/60" />
                           {tech}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </CardContent>
-
-                {/* Hover corner light */}
-                <motion.div
-                  className={`absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br ${skill.color} rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`}
-                />
-              </Card>
-            </motion.div>
-          );
-        })}
-      </motion.div>
-
-      {/* Footer Message */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.5, ease: easeOut }}
-        className="mt-12 text-center"
-      >
-        <p className="text-muted-foreground text-lg">
-          Always learning and expanding my skillset with the latest technologies
-        </p>
-
-        <motion.div
-          className="mt-4 inline-flex items-center gap-2 text-primary"
-          animate={{ x: [0, 5, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: easeInOut }}
-        >
-          <TrendingUp className="w-5 h-5" />
-          <span className="font-semibold">Continuously Growing</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </motion.div>
+      </TooltipProvider>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.5 }}
+        className="mt-16 flex flex-col items-center gap-8"
+      >
+        <div className="flex items-center gap-4 w-full">
+          <Separator className="flex-1" />
+          <span className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+            End of Overview
+          </span>
+          <Separator className="flex-1" />
+        </div>
+
+        <Button asChild variant="ghost" className="group rounded-full hover:bg-primary/5">
+          <Link href="/skill" className="flex items-center">
+            View full technological roadmap
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </Button>
       </motion.div>
     </section>
   );

@@ -1,15 +1,28 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { 
+  Star, 
+  GitFork, 
+  ExternalLink, 
+  Briefcase, 
+  ArrowLeft, 
+  Search, 
+  Filter, 
+  Code2,
+  Github,
+  Globe
+} from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, GitFork, ExternalLink, Briefcase, ArrowLeft, Search, Filter } from "lucide-react";
-import Link from "next/link";
 
+// --- Types ---
 type Repo = {
   id: number;
   name: string;
@@ -19,29 +32,19 @@ type Repo = {
   html_url: string;
   homepage?: string | null;
   topics?: string[];
+  language: string | null;
   fork: boolean;
 };
 
-// Simple Skeleton Component for better UX during loading
+// --- Skeleton Loader ---
 const ProjectCardSkeleton = () => (
-  <Card className="h-full flex flex-col border rounded-3xl overflow-hidden shadow-md">
-    <CardHeader className="pt-6 pb-2">
-      <Skeleton className="h-6 w-3/4 mb-2" />
-    </CardHeader>
-    <CardContent className="flex flex-col gap-4 flex-1">
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-11/12" />
-      <div className="flex flex-wrap gap-2">
-        <Skeleton className="h-5 w-16 rounded-full" />
-        <Skeleton className="h-5 w-20 rounded-full" />
-      </div>
-      <div className="flex items-center gap-3 pt-2 border-t border-border/30">
-        <Skeleton className="h-5 w-14 rounded-full" />
-        <Skeleton className="h-5 w-14 rounded-full" />
-      </div>
-      <div className="mt-auto">
-        <Skeleton className="h-10 w-full" />
-      </div>
+  <Card className="h-full border rounded-3xl overflow-hidden shadow-sm">
+    <CardHeader className="pt-6 pb-2"><Skeleton className="h-6 w-3/4" /></CardHeader>
+    <CardContent className="space-y-4">
+      <Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-2/3" />
+      <div className="flex gap-2"><Skeleton className="h-5 w-12" /><Skeleton className="h-5 w-12" /></div>
+      <div className="pt-4 border-t flex gap-4"><Skeleton className="h-4 w-10" /><Skeleton className="h-4 w-10" /></div>
+      <Skeleton className="h-10 w-full rounded-xl" />
     </CardContent>
   </Card>
 );
@@ -49,232 +52,157 @@ const ProjectCardSkeleton = () => (
 export default function ProjectsPage() {
   const [repos, setRepos] = useState<Repo[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"stars" | "updated" | "name">("stars");
 
   useEffect(() => {
-    fetch(
-      "https://api.github.com/users/madhav9757/repos?sort=updated&per_page=100"
-    )
+    fetch("https://api.github.com/users/madhav9757/repos?sort=updated&per_page=100")
       .then((res) => {
-        if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
+        if (!res.ok) throw new Error("GitHub limit reached or User not found");
         return res.json();
       })
-      .then((data: Repo[]) => {
-        const filtered = data.filter((r) => !r.fork);
-        setRepos(filtered);
-      })
-      .catch(() => setError("Could not load repositories from GitHub."));
+      .then((data: Repo[]) => setRepos(data.filter((r) => !r.fork)))
+      .catch(() => setError("Failed to sync with GitHub API."));
   }, []);
 
-  // Use useMemo for efficient filtering and sorting based on search term
+  // Language Stats Logic
+  const languageStats = useMemo(() => {
+    if (!repos) return [];
+    const counts: Record<string, number> = {};
+    repos.forEach(r => r.language && (counts[r.language] = (counts[r.language] || 0) + 1));
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  }, [repos]);
+
+  // Filtering & Sorting Logic
   const filteredRepos = useMemo(() => {
     if (!repos) return [];
-    
-    let filtered = repos;
+    let filtered = repos.filter(r => 
+      r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.topics?.some(t => t.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
-    // Apply search filter
-    if (searchTerm) {
-      const lowerCaseSearch = searchTerm.toLowerCase();
-      filtered = repos.filter(
-        (repo) =>
-          repo.name.toLowerCase().includes(lowerCaseSearch) ||
-          repo.description?.toLowerCase().includes(lowerCaseSearch) ||
-          repo.topics?.some((topic) => topic.toLowerCase().includes(lowerCaseSearch))
-      );
-    }
-
-    // Apply sorting
     return [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case "stars":
-          return b.stargazers_count - a.stargazers_count;
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "updated":
-          return 0; // Already sorted by updated from API
-        default:
-          return 0;
-      }
+      if (sortBy === "stars") return b.stargazers_count - a.stargazers_count;
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      return 0; // Default sorted by API
     });
   }, [repos, searchTerm, sortBy]);
 
   return (
-    <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Sticky Controls & Back Button */}
-      <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:backdrop-blur-lg py-4 mb-8 border-b border-border/50 shadow-sm">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <Link href="/">
-            <Button variant="outline" className="flex items-center gap-2 hover:bg-primary/10 transition-colors">
-              <ArrowLeft size={16} />
-              Back
-            </Button>
-          </Link>
-          
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1 w-full">
-            <div className="relative w-full sm:flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-              <Input
-                type="text"
-                placeholder="Search by name, description, or topic..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-4 h-10 border-border/60 focus:border-primary transition-colors"
-              />
-            </div>
-            
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "stars" | "updated" | "name")}
-                className="flex h-10 w-full sm:w-auto rounded-md border border-border/60 bg-background px-3 py-2 text-sm ring-offset-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors cursor-pointer"
-              >
-                <option value="stars">Most Stars</option>
-                <option value="name">Name (A-Z)</option>
-                <option value="updated">Recently Updated</option>
-              </select>
-            </div>
+    <div className="min-h-screen bg-background pb-20">
+      {/* Sticky Header */}
+      <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+          <Button variant="ghost" asChild size="sm" className="rounded-full">
+            <Link href="/"><ArrowLeft className="w-4 h-4 mr-2" /> Back</Link>
+          </Button>
+
+          <div className="flex-1 max-w-md relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <Input 
+              placeholder="Search repositories..." 
+              className="pl-10 h-9 rounded-full bg-muted/50 border-transparent focus:bg-background transition-all"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="hidden sm:flex items-center gap-2">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <select 
+              className="bg-transparent text-sm font-medium focus:outline-none cursor-pointer"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+            >
+              <option value="stars">Stars</option>
+              <option value="name">Name</option>
+              <option value="updated">Latest</option>
+            </select>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
-      >
-        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4 border border-primary/20">
-          <Briefcase size={16} /> All Projects
-        </span>
+      <main className="max-w-7xl mx-auto px-6 pt-12">
+        {/* Hero Section */}
+        <header className="mb-16 text-center space-y-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center gap-2 mb-6">
+            {languageStats.map(([lang, count]) => (
+              <Badge key={lang} variant="outline" className="rounded-full px-3 py-1 bg-primary/5 border-primary/10">
+                <Code2 className="w-3 h-3 mr-1 text-primary" /> {lang} <span className="ml-1 opacity-40 text-[10px]">{count}</span>
+              </Badge>
+            ))}
+          </motion.div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight">Code <span className="text-primary">&</span> Ship.</h1>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            A live feed of my open-source work, experimental tools, and production-ready templates.
+          </p>
+        </header>
 
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-          My GitHub Repositories
-        </h1>
+        {/* Repos Grid */}
+        <div className="min-h-[400px]">
+          {error ? (
+            <div className="text-center py-20 text-destructive">{error}</div>
+          ) : !repos ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => <ProjectCardSkeleton key={i} />)}
+            </div>
+          ) : (
+            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence mode="popLayout">
+                {filteredRepos.map((repo) => (
+                  <motion.div
+                    key={repo.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Card className="h-full flex flex-col group border-border/40 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 transition-all rounded-[2rem] overflow-hidden">
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="p-2 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors">
+                            <Github className="w-5 h-5 group-hover:text-primary" />
+                          </div>
+                          <div className="flex gap-3 text-xs font-bold text-muted-foreground">
+                            <span className="flex items-center gap-1"><Star className="w-3 h-3 text-amber-500 fill-amber-500" /> {repo.stargazers_count}</span>
+                            <span className="flex items-center gap-1"><GitFork className="w-3 h-3" /> {repo.forks_count}</span>
+                          </div>
+                        </div>
+                        <CardTitle className="text-xl font-bold tracking-tight">{repo.name}</CardTitle>
+                      </CardHeader>
 
-        <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-          {error
-            ? "Could not load repositories. Please try again."
-            : repos
-            ? `Explore ${filteredRepos.length} of my ${repos.length} open-source projects, sorted and searchable.`
-            : "Browse through my open-source contributions — neatly sorted and beautifully presented."}
-        </p>
-      </motion.div>
+                      <CardContent className="flex-1 flex flex-col space-y-4">
+                        <p className="text-sm text-muted-foreground line-clamp-3">
+                          {repo.description || "Experimental project with high-performance code architecture."}
+                        </p>
+                        
+                        <div className="flex flex-wrap gap-1.5">
+                          {repo.topics?.slice(0, 3).map(t => (
+                            <Badge key={t} variant="secondary" className="text-[10px] uppercase font-bold tracking-wider px-2 py-0">#{t}</Badge>
+                          ))}
+                        </div>
 
-      {/* Conditional Rendering & Repo Grid */}
-      {error ? (
-        <p className="text-center text-red-500 font-bold">{error}</p>
-      ) : !repos ? (
-        // Skeleton Loading State
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <ProjectCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : filteredRepos.length === 0 && searchTerm ? (
-        // No Results State
-        <p className="text-center text-muted-foreground text-lg">
-          No repositories found matching "{searchTerm}". Try a different search term.
-        </p>
-      ) : (
-        // Main Repo Grid
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredRepos.map((repo, index) => (
-            <motion.div
-              key={repo.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: index * 0.03, duration: 0.4 }}
-              whileHover={{ y: -8 }}
-            >
-              <Card className="group h-full flex flex-col border-2 border-border/50 hover:border-primary/50 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-background to-background/80">
-                <CardHeader className="pt-6 pb-3 bg-gradient-to-br from-primary/5 to-transparent">
-                  <CardTitle className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                    {repo.name}
-                  </CardTitle>
-                </CardHeader>
-
-                <CardContent className="flex flex-col gap-4 flex-1 pt-4">
-                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-                    {repo.description || "No description provided."}
-                  </p>
-
-                  {/* Topics */}
-                  {repo.topics && repo.topics.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {repo.topics.slice(0, 4).map((topic) => (
-                        <Badge
-                          key={topic}
-                          variant="outline"
-                          className="text-xs px-2.5 py-1 font-medium border-primary/40 bg-primary/5 hover:bg-primary/10 transition-colors"
-                        >
-                          {topic}
-                        </Badge>
-                      ))}
-                      {repo.topics.length > 4 && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs px-2.5 py-1 font-medium border-border/40 bg-muted/50"
-                        >
-                          +{repo.topics.length - 4}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Stats */}
-                  <div className="flex items-center gap-4 pt-3 border-t border-border/40">
-                    <div className="flex items-center gap-1.5 text-sm">
-                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <span className="font-semibold">{repo.stargazers_count}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-sm">
-                      <GitFork className="w-4 h-4 text-blue-500" />
-                      <span className="font-semibold">{repo.forks_count}</span>
-                    </div>
-                  </div>
-
-                  {/* Buttons (View on GitHub & Live Demo) */}
-                  <div className="mt-auto flex gap-2 pt-2">
-                    {repo.homepage && (
-                      <Button
-                        asChild
-                        className="flex-1 font-semibold group/btn"
-                        variant="secondary"
-                      >
-                        <a
-                          href={repo.homepage}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-1.5 group-hover/btn:rotate-12 transition-transform" />
-                          Live Demo
-                        </a>
-                      </Button>
-                    )}
-                    <Button
-                      asChild
-                      className="flex-1 font-semibold group/btn"
-                      variant="default"
-                    >
-                      <a
-                        href={repo.html_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        GitHub
-                        <ExternalLink className="w-4 h-4 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                      </a>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                        <div className="mt-auto pt-4 flex gap-2">
+                          <Button asChild className="flex-1 rounded-xl font-bold h-11 shadow-lg shadow-primary/10">
+                            <a href={repo.html_url} target="_blank">Repository</a>
+                          </Button>
+                          {repo.homepage && (
+                            <Button asChild variant="outline" size="icon" className="h-11 w-11 rounded-xl">
+                              <a href={repo.homepage} target="_blank"><Globe className="w-4 h-4" /></a>
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </motion.div>
-          ))}
+          )}
         </div>
-      )}
-    </section>
+      </main>
+    </div>
   );
 }

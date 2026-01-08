@@ -1,8 +1,9 @@
 "use client";
 
-// app/page.tsx
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUp, Mouse } from "lucide-react";
 
-import React from "react";
 import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
@@ -10,6 +11,7 @@ import Experience from "@/components/Experience";
 import About from "@/components/About";
 import ContactForm from "@/components/ContactForm";
 import Navbar from "@/components/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 interface SectionWrapperProps {
   id: string;
@@ -17,31 +19,49 @@ interface SectionWrapperProps {
   className?: string;
 }
 
+/**
+ * SectionWrapper: Standardizes spacing and scroll behavior across the site.
+ * Includes a subtle fade-in animation as sections enter the viewport.
+ */
 function SectionWrapper({ id, children, className = "" }: SectionWrapperProps) {
   return (
-    // Responsive scroll margin for fixed navbar
-    // scroll-mt-16 (64px) on mobile, scroll-mt-20 (80px) on tablet, scroll-mt-24 (96px) on desktop
-    <section
+    <motion.section
       id={id}
-      className={`scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-24 ${className}`}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className={`scroll-mt-24 sm:scroll-mt-32 ${className}`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
-    </section>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {children}
+      </div>
+    </motion.section>
   );
 }
 
 export default function Page() {
   return (
-    <>
-      {/* NAVBAR - Fixed positioning handled in Navbar component */}
+    <div className="relative min-h-screen bg-background selection:bg-primary/10 selection:text-primary">
+      {/* Texture Overlay: Gives a premium paper/grain effect */}
+      <div className="fixed inset-0 z-[9999] pointer-events-none opacity-[0.03] mix-blend-overlay bg-[url('/noise.svg')]" />
+      
+      {/* Background Decorative Blobs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute top-[40%] -right-[5%] w-[30%] h-[30%] rounded-full bg-blue-500/5 blur-[120px]" />
+      </div>
+
       <Navbar />
 
-      {/* MAIN CONTENT */}
-      {/* Responsive padding-top to account for fixed navbar */}
-      {/* pt-20 (80px) mobile, pt-24 (96px) tablet, pt-28 (112px) desktop */}
-      <main className="pt-20 sm:pt-24 md:pt-28 pb-16 sm:pb-24 md:pb-32 space-y-24 sm:space-y-32 md:space-y-48">
-        <SectionWrapper id="home">
+      <main className="relative z-10 space-y-32 sm:space-y-48 md:space-y-64 pb-32">
+        <SectionWrapper id="home" className="pt-20 md:pt-32">
           <Hero />
+          {/* Scroll Indicator */}
+          <div className="hidden md:flex flex-col items-center justify-center mt-20 animate-bounce opacity-20">
+             <Mouse size={20} />
+             <div className="w-0.5 h-4 bg-foreground mt-2 rounded-full" />
+          </div>
         </SectionWrapper>
 
         <SectionWrapper id="projects">
@@ -65,51 +85,52 @@ export default function Page() {
         </SectionWrapper>
       </main>
 
-      {/* Optional: Add a back to top button for better UX */}
+      <footer className="py-12 border-t border-border/40 bg-muted/20">
+        <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-sm text-muted-foreground">
+            © 2025 <span className="font-bold text-foreground">Madhav.dev</span>. Built with Next.js & Framer Motion.
+          </p>
+          <div className="flex gap-6 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+             <a href="#" className="hover:text-primary transition-colors">Twitter</a>
+             <a href="#" className="hover:text-primary transition-colors">LinkedIn</a>
+             <a href="#" className="hover:text-primary transition-colors">GitHub</a>
+          </div>
+        </div>
+      </footer>
+
       <BackToTop />
-    </>
+    </div>
   );
 }
 
-// Optional: Back to top button component
 function BackToTop() {
   const [show, setShow] = React.useState(false);
 
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setShow(window.scrollY > 500);
-    };
-
+  useEffect(() => {
+    const handleScroll = () => setShow(window.scrollY > 800);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  if (!show) return null;
-
   return (
-    <button
-      onClick={scrollToTop}
-      className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-50 p-3 sm:p-4 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-      aria-label="Back to top"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5 sm:h-6 sm:w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 10l7-7m0 0l7 7m-7-7v18"
-        />
-      </svg>
-    </button>
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: 20 }}
+          className="fixed bottom-8 right-8 z-[100]"
+        >
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="h-12 w-12 rounded-full bg-background/80 backdrop-blur-md border-border/50 shadow-2xl hover:bg-primary hover:text-primary-foreground transition-all group"
+          >
+            <ArrowUp size={20} className="group-hover:-translate-y-1 transition-transform" />
+          </Button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

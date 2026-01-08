@@ -1,131 +1,164 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { 
+  Code2, 
+  Zap, 
+  Lightbulb, 
+  TrendingUp, 
+  User, 
+  ArrowUpRight,
+  Terminal
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Code, Zap, Lightbulb, TrendingUp } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const keyFacts = [
   {
-    icon: Code,
+    icon: Code2,
     title: "Stack Expertise",
-    description: "Next.js, Node.js, TypeScript, PostgreSQL, MongoDB.",
-    color: "text-indigo-500",
+    description: "Next.js, TypeScript, PostgreSQL, & Node.js.",
+    color: "text-blue-500",
+    bg: "bg-blue-500/10",
   },
   {
     icon: Zap,
     title: "AI & Automation",
-    description:
-      "Generative AI, Prompt Engineering, OpenAI/Gemini APIs, LangChain.",
+    description: "RAG Systems, LLMs, & Agentic Workflows.",
     color: "text-emerald-500",
+    bg: "bg-emerald-500/10",
   },
   {
     icon: Lightbulb,
     title: "Development Style",
-    description: "Performance-first, clean architecture & TDD workflow.",
+    description: "Clean architecture & Type-safe patterns.",
     color: "text-rose-500",
+    bg: "bg-rose-500/10",
   },
   {
     icon: TrendingUp,
-    title: "Goal",
-    description: "Building scalable, intelligent & production-ready apps.",
-    color: "text-yellow-600",
+    title: "Primary Goal",
+    description: "Building resilient, production-ready apps.",
+    color: "text-amber-500",
+    bg: "bg-amber-500/10",
   },
 ];
 
 export default function About() {
   return (
-    <section
-      id="about"
-      className="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-    >
-      {/* Heading */}
-      <motion.h2
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="text-3xl sm:text-4xl font-extrabold mb-10 text-center tracking-tight"
-      >
-        Who is Madhav? 💡
-      </motion.h2>
+    <section id="about" className="relative py-24 max-w-7xl mx-auto px-6 lg:px-8 overflow-hidden">
+      {/* Background Subtle Gradient */}
+      <div className="absolute top-0 right-0 -z-10 h-full w-full opacity-20 [mask-image:radial-gradient(350px_250px_at_top_right,white,transparent)]">
+        <div className="h-full w-full bg-primary/20" />
+      </div>
 
-      {/* Card */}
+      <div className="flex flex-col items-center text-center mb-16">
+        <Badge variant="outline" className="mb-4 px-4 py-1.5 border-primary/20 bg-primary/5 text-primary rounded-full">
+          <User className="w-3.5 h-3.5 mr-2" />
+          The Developer
+        </Badge>
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+          Who is Madhav?
+        </h2>
+      </div>
+
       <motion.div
-        initial={{ opacity: 0, y: 15 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <Card className="rounded-2xl shadow-lg border border-border bg-background/95">
+        <Card className="overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm rounded-[2rem] shadow-2xl shadow-primary/5">
           <CardContent className="p-0">
-            <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-border">
-              {/* LEFT BIO */}
-              <div className="lg:col-span-2 p-6 sm:p-8 lg:p-10 bg-background">
-                <h3 className="text-2xl font-bold mb-4 text-primary">
-                  Full-Stack & Generative AI Developer
-                </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-border/60">
+              
+              {/* Left Column: Narrative Bio */}
+              <div className="lg:col-span-7 p-8 md:p-12 lg:p-16">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="h-10 w-1 rounded-full bg-primary" />
+                  <h3 className="text-2xl md:text-3xl font-bold tracking-tight">
+                    Full-Stack & Generative AI Developer
+                  </h3>
+                </div>
 
-                <div className="space-y-5 text-base sm:text-lg leading-relaxed text-foreground/90">
+                <div className="space-y-6 text-lg leading-relaxed text-muted-foreground">
                   <p>
-                    I'm a passionate{" "}
-                    <span className="font-semibold">Full-Stack Developer</span>{" "}
-                    skilled in React, Next.js, Node.js, and TypeScript. I build
-                    performant, scalable, and polished applications using modern
-                    tooling and databases like PostgreSQL and MongoDB.
+                    I am a software engineer dedicated to bridge the gap between 
+                    complex backend systems and intuitive user interfaces. Currently, 
+                    my focus lies in <span className="text-foreground font-medium underline decoration-primary/30 decoration-2 underline-offset-4">Full-Stack Development</span> 
+                    using the T3 stack and modern cloud infrastructures.
                   </p>
-
-                  <Separator className="lg:hidden my-5" />
 
                   <p>
-                    My interest in{" "}
-                    <span className="font-semibold">Generative AI</span> drives
-                    me to work with OpenAI, Gemini APIs, LLM automation,
-                    LangChain, and AI-first product development.
+                    With the rise of <span className="text-foreground font-medium">Generative AI</span>, 
+                    I've pivoted my research toward building AI-native products—leveraging 
+                    vector databases, LangChain, and custom LLM orchestrations to automate 
+                    business intelligence.
                   </p>
 
-                  <p className="font-semibold text-sm text-muted-foreground">
-                    I love experimenting, learning new tools, and contributing to
-                    real-world impactful solutions.
-                  </p>
+                  <div className="pt-6 flex flex-wrap gap-4">
+                    <Button variant="secondary" size="sm" className="rounded-full">
+                      <Terminal className="w-4 h-4 mr-2" />
+                      View Tech Stack
+                    </Button>
+                    <Button variant="ghost" size="sm" className="rounded-full group">
+                      Read more stories
+                      <ArrowUpRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
-              {/* RIGHT FACTS */}
-              <div className="lg:col-span-1 p-6 sm:p-8 lg:p-10 bg-muted/40">
-                <h3 className="text-xl font-bold mb-6">Key Highlights</h3>
+              {/* Right Column: Key Fact Grid */}
+              <div className="lg:col-span-5 bg-muted/30 p-8 md:p-12">
+                <h3 className="text-xs uppercase tracking-[0.2em] font-bold text-muted-foreground mb-10">
+                  Key Highlights
+                </h3>
 
-                <div className="space-y-6">
+                <div className="grid gap-8">
                   {keyFacts.map((fact, index) => (
                     <motion.div
                       key={fact.title}
-                      initial={{ opacity: 0, x: 15 }}
+                      initial={{ opacity: 0, x: 20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: index * 0.15 }}
-                      className="flex items-start gap-4"
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="group flex items-start gap-5"
                     >
-                      <fact.icon
-                        size={26}
-                        className={`mt-1 shrink-0 ${fact.color}`}
-                      />
+                      <div className={`p-3 rounded-2xl transition-transform group-hover:scale-110 ${fact.bg} ${fact.color}`}>
+                        <fact.icon size={22} strokeWidth={2.5} />
+                      </div>
 
-                      <div>
-                        <h4 className="font-semibold text-base sm:text-lg">
+                      <div className="space-y-1">
+                        <h4 className="font-bold text-foreground leading-none">
                           {fact.title}
                         </h4>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-sm text-muted-foreground leading-snug">
                           {fact.description}
                         </p>
                       </div>
                     </motion.div>
                   ))}
                 </div>
+
+                <div className="mt-12 p-6 rounded-2xl border border-dashed border-border bg-background/50">
+                  <p className="text-xs font-medium text-muted-foreground italic text-center">
+                    "I love experimenting with new tools to solve real-world problems 
+                    through clean, impactful software."
+                  </p>
+                </div>
               </div>
+
             </div>
           </CardContent>
         </Card>
       </motion.div>
+      
+      <div className="mt-12 flex justify-center opacity-40 grayscale transition-all hover:grayscale-0">
+        <Separator className="w-1/2" />
+      </div>
     </section>
   );
 }

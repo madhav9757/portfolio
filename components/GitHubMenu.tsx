@@ -1,25 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  Github as GitHubIcon,
+  Github,
   ExternalLink,
   Star,
   GitFork,
-  Activity,
-  Zap,
+  Circle,
+  ChevronRight,
+  RefreshCcw,
+  AlertTriangle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type Repo = {
   id: number;
@@ -33,163 +37,180 @@ type Repo = {
 };
 
 export default function GitHubMenu() {
-  const [repos, setRepos] = useState<Repo[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [repos, setRepos] = useState<Repo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchRepos = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await fetch(
+        "https://api.github.com/users/madhav9757/repos?sort=updated&per_page=10"
+      );
+      if (!res.ok) throw new Error();
+      const data: Repo[] = await res.json();
+      setRepos(data.filter((r) => !r.fork).slice(0, 5));
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setIsLoading(true);
-    fetch("https://api.github.com/users/madhav9757/repos?sort=updated&per_page=10")
-      .then((res) => {
-        if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
-        return res.json();
-      })
-      .then((data: Repo[]) => {
-        const filteredRepos = data.filter((r) => !r.fork).slice(0, 5);
-        setRepos(filteredRepos);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setError("Could not load repositories");
-        setIsLoading(false);
-      });
+    fetchRepos();
   }, []);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
-          className="rounded-xl hover:bg-secondary/60 transition h-10 w-10 flex items-center justify-center"
-          aria-label="Open GitHub menu"
+          className="h-10 w-10 rounded-full border-border/50 bg-background/70 backdrop-blur hover:bg-muted"
         >
-          <GitHubIcon size={20} className="text-foreground" />
+          <Github className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="end"
-        className="w-[calc(100vw-2rem)] max-w-[360px] sm:w-80 bg-background border border-border rounded-xl shadow-xl p-0 overflow-hidden"
-        sideOffset={8}
+        sideOffset={12}
+        className="w-80 overflow-hidden rounded-xl border-border/50 bg-background/95 backdrop-blur"
       >
-        {/* Header */}
-        <div className="p-4 bg-muted/40 flex items-center gap-2 text-base font-semibold animate-fadeIn">
-          <GitHubIcon size={20} />
-          <a
-            href="https://github.com/madhav9757"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="truncate hover:underline"
-          >
-            madhav9757
-          </a>
+        <div className="flex items-center justify-between px-4 py-3 border-b">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-foreground text-background">
+              <Github className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold leading-none">
+                madhav9757
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Recent repositories
+              </p>
+            </div>
+          </div>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={fetchRepos}
+              >
+                <RefreshCcw
+                  className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
+                />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Refresh</TooltipContent>
+          </Tooltip>
         </div>
 
-        <div className="max-h-[60vh] sm:max-h-80 overflow-y-auto">
-          {/* Error */}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="p-4 text-destructive text-sm"
-            >
-              {error}
-            </motion.div>
-          )}
-
-          {/* Loading */}
-          {isLoading && !error && (
-            <div className="p-4 flex flex-col gap-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="animate-pulse space-y-2">
-                  <div className="h-4 bg-secondary rounded w-3/4"></div>
-                  <div className="h-3 bg-secondary/70 rounded w-full"></div>
-                  <div className="h-3 bg-secondary/50 rounded w-1/2"></div>
+        <ScrollArea className="max-h-[360px]">
+          <div className="p-2">
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <div className="space-y-2 p-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="space-y-2 rounded-lg p-3">
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-3 w-full" />
+                      <div className="flex gap-2">
+                        <Skeleton className="h-3 w-10" />
+                        <Skeleton className="h-3 w-10" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              ) : error ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex flex-col items-center gap-3 py-10"
+                >
+                  <AlertTriangle className="h-6 w-6 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    Failed to load repositories
+                  </p>
+                  <Button size="sm" variant="outline" onClick={fetchRepos}>
+                    Retry
+                  </Button>
+                </motion.div>
+              ) : (
+                <div className="space-y-1">
+                  {repos.map((repo, i) => (
+                    <motion.a
+                      key={repo.id}
+                      href={repo.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="group block rounded-lg border border-transparent p-3 transition hover:border-border hover:bg-muted/50"
+                    >
+                      <div className="flex items-center justify-between">
+                        <p className="truncate text-sm font-medium group-hover:text-primary">
+                          {repo.name}
+                        </p>
+                        <ChevronRight className="h-4 w-4 opacity-0 transition group-hover:opacity-100 group-hover:translate-x-0.5" />
+                      </div>
 
-          {/* Repo List */}
-          {repos && !isLoading && (
-            <div className="divide-y divide-border">
-              <AnimatePresence>
-                {repos.map((repo) => (
-                  <motion.a
-                    key={repo.id}
-                    href={repo.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="block px-4 py-3 transition hover:bg-secondary/50 group rounded-md"
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className="font-semibold text-sm text-foreground group-hover:text-primary line-clamp-1">
-                        {repo.name}
-                      </p>
-                      <ExternalLink
-                        size={16}
-                        className="text-muted-foreground group-hover:text-primary transition-colors"
-                      />
-                    </div>
-
-                    {repo.description ? (
-                      <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
-                        {repo.description}
-                      </p>
-                    ) : (
-                      <p className="text-xs text-muted-foreground italic mb-2">
-                        No description
-                      </p>
-                    )}
-
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                      {repo.language && (
-                        <Badge variant="outline" className="flex items-center gap-1">
-                          <span
-                            className="w-2 h-2 rounded-full inline-block"
-                            style={{ backgroundColor: "#4ade80" }}
-                          ></span>
-                          {repo.language}
-                        </Badge>
+                      {repo.description && (
+                        <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+                          {repo.description}
+                        </p>
                       )}
-                      <Badge variant="outline" className="flex items-center gap-1">
-                        <Star size={12} /> {repo.stargazers_count}
-                      </Badge>
-                      <Badge variant="outline" className="flex items-center gap-1">
-                        <GitFork size={12} /> {repo.forks_count}
-                      </Badge>
-                      {repo.fork && <Badge variant="secondary">Forked</Badge>}
-                    </div>
-                  </motion.a>
-                ))}
-              </AnimatePresence>
-            </div>
-          )}
 
-          {/* Empty */}
-          {repos && repos.length === 0 && !isLoading && (
-            <div className="p-6 text-center text-muted-foreground text-sm">
-              No repositories found
-            </div>
-          )}
-        </div>
+                      <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+                        {repo.language && (
+                          <div className="flex items-center gap-1.5">
+                            <Circle className="h-2 w-2 fill-primary text-primary" />
+                            {repo.language}
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1">
+                          <Star className="h-3 w-3" />
+                          {repo.stargazers_count}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <GitFork className="h-3 w-3" />
+                          {repo.forks_count}
+                        </div>
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
+        </ScrollArea>
 
         <Separator />
 
-        {/* Footer */}
-        <a
-          href="https://github.com/madhav9757"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="p-4 flex items-center justify-center gap-2 text-sm font-medium text-primary hover:underline hover:bg-secondary/30 transition rounded-b-xl"
-        >
-          View full GitHub <ExternalLink size={16} />
-        </a>
+        <div className="p-2">
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full justify-between"
+          >
+            <a
+              href="https://github.com/madhav9757"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="text-sm font-medium">
+                View all repositories
+              </span>
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

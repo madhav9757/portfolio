@@ -2,7 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
-import { Command, MousePointerClick, Zap } from "lucide-react";
+import { 
+  Command, 
+  MousePointerClick, 
+  Zap, 
+  Link2, 
+  ArrowUp, 
+  Keyboard 
+} from "lucide-react";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileMenu";
 import { NAV_LINKS } from "@/lib/constants";
@@ -13,9 +20,10 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
   ContextMenuSeparator,
+  ContextMenuShortcut,
 } from "@/components/ui/context-menu";
 import { toast } from "sonner";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 export default function Navbar() {
   const [active, setActive] = useState("home");
@@ -24,18 +32,19 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
 
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 150, damping: 25, restDelta: 0.001 });
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
-  // Mount check
-  useEffect(() => setMounted(true), []);
-
-  // Keyboard shortcut toast
   useEffect(() => {
+    setMounted(true);
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        toast("Command Menu coming soon!", {
-          description: "This feature is being wired to your search logic.",
+        toast("Command Menu", {
+          description: "Interface search logic is being initialized.",
           icon: <Command className="h-4 w-4" />,
         });
       }
@@ -44,97 +53,130 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  // Scroll logic
   useEffect(() => {
-    const getNavHeight = () => (window.innerWidth < 640 ? 70 : window.innerWidth < 768 ? 80 : 90);
     const onScroll = () => {
       const currentY = window.scrollY;
-      const NAV_HEIGHT = getNavHeight();
-      const hideThreshold = window.innerWidth < 768 ? 100 : 150;
+      const hideThreshold = 120;
+      
+      // Hidden state logic
       setHidden(currentY > lastScroll.current && currentY > hideThreshold);
       lastScroll.current = currentY;
 
+      // Active section detection
+      const NAV_HEIGHT = 100;
       const found = NAV_LINKS.find((link) => {
         const el = document.getElementById(link.id);
         if (!el) return false;
         const rect = el.getBoundingClientRect();
-        return rect.top <= NAV_HEIGHT + 10 && rect.bottom >= NAV_HEIGHT;
+        return rect.top <= NAV_HEIGHT && rect.bottom >= NAV_HEIGHT;
       });
-      setActive(found ? found.id : currentY < NAV_HEIGHT ? "home" : active);
+      
+      if (found) setActive(found.id);
+      else if (currentY < 100) setActive("home");
     };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [active]);
+  }, []);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const offset = window.innerWidth < 640 ? 60 : 80;
-    window.scrollTo({ top: el.offsetTop - offset, behavior: "smooth" });
+    const offset = 80;
+    const bodyRect = document.body.getBoundingClientRect().top;
+    const elementRect = el.getBoundingClientRect().top;
+    const elementPosition = elementRect - bodyRect;
+    const offsetPosition = elementPosition - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
   };
 
   if (!mounted) return null;
 
   return (
     <>
+      {/* Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3px] bg-primary z-[70] origin-left"
+        style={{ scaleX }}
+      />
+
       <AnimatePresence mode="wait">
         {!hidden && (
           <motion.nav
-            initial={{ y: -100, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: -100, opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 220, damping: 22 }}
-            className="fixed top-4 left-0 right-0 z-[60] max-w-[95vw] lg:max-w-6xl mx-auto"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            className="fixed top-6 left-0 right-0 z-[60] px-4"
           >
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <div className="relative group px-2">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-700" />
-                  <div className="relative">
-                    <div className="hidden md:block">
-                      <DesktopNav
-                        active={active}
-                        scrollToSection={scrollToSection}
-                        mounted={mounted}
-                      />
-                    </div>
-                    <div className="block md:hidden">
-                      <MobileNav
-                        active={active}
-                        scrollToSection={scrollToSection}
-                        mounted={mounted}
-                      />
+            <div className="max-w-fit mx-auto">
+              <ContextMenu>
+                <ContextMenuTrigger>
+                  <div className="relative group">
+                    {/* Glassmorphism Container */}
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition duration-500" />
+                    
+                    <div className="relative border border-border/50 bg-background/80 backdrop-blur-xl shadow-2xl shadow-black/5 rounded-full px-4 py-2">
+                      <div className="hidden md:block">
+                        <DesktopNav
+                          active={active}
+                          scrollToSection={scrollToSection}
+                          mounted={mounted}
+                        />
+                      </div>
+                      <div className="block md:hidden">
+                        <MobileNav
+                          active={active}
+                          scrollToSection={scrollToSection}
+                          mounted={mounted}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </ContextMenuTrigger>
+                </ContextMenuTrigger>
 
-              <ContextMenuContent className="w-64 animate-fade-in bg-background border border-border rounded-xl shadow-xl">
-                <ContextMenuItem
-                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                  className="gap-2 hover:bg-primary/10 transition-all rounded-md"
-                >
-                  <Zap size={14} className="text-yellow-500" /> Jump to Top
-                  <Badge variant="secondary" className="ml-auto text-[10px]">Pro</Badge>
-                </ContextMenuItem>
+                <ContextMenuContent className="w-64 p-1.5 rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+                  <ContextMenuItem
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="flex items-center gap-2.5 py-2.5 px-3 rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                  >
+                    <ArrowUp size={15} /> 
+                    <span className="text-sm font-medium">Scroll to Top</span>
+                    <ContextMenuShortcut className="opacity-50">
+                      <Zap size={12} />
+                    </ContextMenuShortcut>
+                  </ContextMenuItem>
 
-                <ContextMenuSeparator />
+                  <ContextMenuSeparator className="bg-border/50 my-1" />
 
-                <ContextMenuItem className="gap-2 hover:bg-primary/10 transition-all rounded-md">
-                  <MousePointerClick size={14} /> Focus Navigation
-                </ContextMenuItem>
+                  <ContextMenuItem
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      toast.success("URL copied", {
+                        description: "The link is ready to share.",
+                        icon: <Link2 className="h-4 w-4" />,
+                      });
+                    }}
+                    className="flex items-center gap-2.5 py-2.5 px-3 rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                  >
+                    <Link2 size={15} />
+                    <span className="text-sm font-medium">Copy Section Link</span>
+                  </ContextMenuItem>
 
-                <ContextMenuItem
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    toast.success("Link copied to clipboard!");
-                  }}
-                  className="hover:bg-primary/10 transition-all rounded-md"
-                >
-                  Copy Current Section URL
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
+                  <ContextMenuItem className="flex items-center gap-2.5 py-2.5 px-3 rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
+                    <Keyboard size={15} />
+                    <span className="text-sm font-medium">Shortcuts</span>
+                    <ContextMenuShortcut className="text-[10px] bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                      ⌘K
+                    </ContextMenuShortcut>
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
+            </div>
           </motion.nav>
         )}
       </AnimatePresence>
