@@ -2,16 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUp, Mouse } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 
 import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
 import Experience from "@/components/Experience";
+import Education from "@/components/Education";
 import About from "@/components/About";
 import ContactForm from "@/components/ContactForm";
 import Navbar from "@/components/navbar/Navbar";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import StatsSection from "@/components/StatsSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 
 interface SectionWrapperProps {
   id: string;
@@ -19,15 +23,11 @@ interface SectionWrapperProps {
   className?: string;
 }
 
-/**
- * SectionWrapper: Standardizes spacing and scroll behavior across the site.
- * Includes a subtle fade-in animation as sections enter the viewport.
- */
 function SectionWrapper({ id, children, className = "" }: SectionWrapperProps) {
   return (
     <motion.section
       id={id}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -41,96 +41,108 @@ function SectionWrapper({ id, children, className = "" }: SectionWrapperProps) {
 }
 
 export default function Page() {
-  return (
-    <div className="relative min-h-screen bg-background selection:bg-primary/10 selection:text-primary">
-      {/* Texture Overlay: Gives a premium paper/grain effect */}
-      <div className="fixed inset-0 z-[9999] pointer-events-none opacity-[0.03] mix-blend-overlay bg-[url('/noise.svg')]" />
-      
-      {/* Background Decorative Blobs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute top-[40%] -right-[5%] w-[30%] h-[30%] rounded-full bg-blue-500/5 blur-[120px]" />
-      </div>
-
-      <Navbar />
-
-      <main className="relative z-10 space-y-32 sm:space-y-48 md:space-y-64 pb-32">
-        <SectionWrapper id="home" className="pt-20 md:pt-32">
-          <Hero />
-          {/* Scroll Indicator */}
-          <div className="hidden md:flex flex-col items-center justify-center mt-20 animate-bounce opacity-20">
-             <Mouse size={20} />
-             <div className="w-0.5 h-4 bg-foreground mt-2 rounded-full" />
-          </div>
-        </SectionWrapper>
-
-        <SectionWrapper id="projects">
-          <Projects />
-        </SectionWrapper>
-
-        <SectionWrapper id="skills">
-          <Skills />
-        </SectionWrapper>
-
-        <SectionWrapper id="experience">
-          <Experience />
-        </SectionWrapper>
-
-        <SectionWrapper id="about">
-          <About />
-        </SectionWrapper>
-
-        <SectionWrapper id="contact">
-          <ContactForm />
-        </SectionWrapper>
-      </main>
-
-      <footer className="py-12 border-t border-border/40 bg-muted/20">
-        <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-muted-foreground">
-            © 2025 <span className="font-bold text-foreground">Madhav.dev</span>. Built with Next.js & Framer Motion.
-          </p>
-          <div className="flex gap-6 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-             <a href="#" className="hover:text-primary transition-colors">Twitter</a>
-             <a href="#" className="hover:text-primary transition-colors">LinkedIn</a>
-             <a href="#" className="hover:text-primary transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
-
-      <BackToTop />
-    </div>
-  );
-}
-
-function BackToTop() {
-  const [show, setShow] = React.useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setShow(window.scrollY > 800);
+    const handleScroll = () => setShowBackToTop(window.scrollY > 800);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          className="fixed bottom-8 right-8 z-[100]"
-        >
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="h-12 w-12 rounded-full bg-background/80 backdrop-blur-md border-border/50 shadow-2xl hover:bg-primary hover:text-primary-foreground transition-all group"
+    <div className="relative min-h-screen bg-background selection:bg-primary/10 selection:text-primary">
+      
+      {/* Background Decorative Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        {/* Gradient Orbs */}
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-500/20 dark:bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/3 -right-20 w-80 h-80 bg-purple-500/20 dark:bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-20 left-1/4 w-72 h-72 bg-pink-500/20 dark:bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      </div>
+
+      {/* Navigation */}
+      <Navbar />
+
+      {/* Main Content */}
+      <main className="relative z-10">
+        {/* Hero Section - Full Height */}
+        <SectionWrapper id="home" className="pt-0">
+          <Hero />
+        </SectionWrapper>
+
+        {/* Stats Section */}
+        <SectionWrapper id="stats" className="py-20 md:py-32">
+          <StatsSection />
+        </SectionWrapper>
+
+        {/* Projects Section */}
+        <SectionWrapper id="projects" className="py-20 md:py-32">
+          <Projects />
+        </SectionWrapper>
+
+        {/* Skills Section */}
+        <SectionWrapper id="skills" className="py-20 md:py-32">
+          <Skills />
+        </SectionWrapper>
+
+        {/* Experience Section */}
+        <SectionWrapper id="experience" className="py-20 md:py-32">
+          <Experience />
+        </SectionWrapper>
+
+        {/* Education Section */}
+        <SectionWrapper id="education" className="py-20 md:py-32">
+          <Education />
+        </SectionWrapper>
+
+        {/* About Section */}
+        <SectionWrapper id="about" className="py-20 md:py-32">
+          <About />
+        </SectionWrapper>
+
+        {/* Testimonials Section */}
+        <SectionWrapper id="testimonials" className="py-20 md:py-32">
+          <TestimonialsSection />
+        </SectionWrapper>
+
+        {/* Contact Section */}
+        <SectionWrapper id="contact" className="py-20 md:py-32">
+          <ContactForm />
+        </SectionWrapper>
+      </main>
+
+      {/* Footer */}
+      <Footer developerName="Madhav Semwal" />
+
+      {/* Back to Top Button */}
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="fixed bottom-8 right-8 z-50"
           >
-            <ArrowUp size={20} className="group-hover:-translate-y-1 transition-transform" />
-          </Button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            <Button
+              size="icon"
+              onClick={scrollToTop}
+              className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all group"
+            >
+              <ArrowUp 
+                size={20} 
+                className="group-hover:-translate-y-1 transition-transform" 
+              />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

@@ -1,17 +1,9 @@
-// app/layout.tsx
-
 import "./globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-
-// Theme Provider
-import { ThemeProvider } from "@/components/theme-provider"; 
-
-// Components
-import Footer from "@/components/Footer"; 
-
-// Fonts
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
 
 const GeistSans = Geist({
   subsets: ["latin"],
@@ -27,18 +19,49 @@ const GeistMono = Geist_Mono({
   display: "swap",
 });
 
-// Metadata
 export const metadata: Metadata = {
-  title: "Madhav Semwal — Full Stack Developer",
+  title: "Madhav Semwal — Full Stack Developer & AI Engineer",
   description:
-    "Portfolio of Madhav Semwal — Full Stack Developer specializing in React, Next.js, Node.js, and Generative AI.",
+    "Portfolio of Madhav Semwal — Full Stack Developer specializing in React, Next.js, Node.js, TypeScript, and Generative AI. Building high-performance web applications with clean architecture.",
+  keywords: [
+    "Madhav Semwal",
+    "Full Stack Developer",
+    "React Developer",
+    "Next.js",
+    "TypeScript",
+    "Node.js",
+    "AI Engineer",
+    "Web Developer",
+    "Portfolio",
+  ],
+  authors: [{ name: "Madhav Semwal" }],
+  creator: "Madhav Semwal",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    title: "Madhav Semwal — Full Stack Developer",
+    description: "Portfolio of Madhav Semwal — Building digital experiences that matter.",
+    siteName: "Madhav Semwal Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Madhav Semwal — Full Stack Developer",
+    description: "Building digital experiences with modern web technologies.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
-// Accessibility Skip Link
 const SkipToContent = () => (
   <a
     href="#main-content"
-    className="sr-only focus:not-sr-only absolute left-4 top-4 z-[9999] p-3 rounded-md bg-primary text-primary-foreground font-semibold transition"
+    className="sr-only focus:not-sr-only fixed left-4 top-4 z-[9999] p-4 rounded-xl bg-primary text-primary-foreground font-semibold shadow-xl transition-all focus:ring-4 ring-primary/50"
   >
     Skip to main content
   </a>
@@ -51,21 +74,36 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
       className={`${GeistSans.variable} ${GeistMono.variable} scroll-smooth`}
     >
-      <body className="antialiased bg-background text-foreground transition-colors duration-300 min-h-screen">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <meta name="theme-color" content="#3b82f6" />
+      </head>
+      <body className="antialiased bg-background text-foreground transition-colors duration-300 min-h-screen overflow-x-hidden">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange={false}
         >
           <SkipToContent />
+          
+          {/* Noise Texture Overlay */}
+          <div className="fixed inset-0 z-[9999] pointer-events-none opacity-[0.015] mix-blend-overlay noise" />
 
-          <div className="flex flex-col min-h-screen">
+          {/* Main Content */}
+          <div className="relative min-h-screen flex flex-col">
             <main id="main-content" className="flex-grow">
               {children}
             </main>
-            <Footer developerName="Madhav Semwal" />
           </div>
+
+          {/* Toast Notifications */}
+          <Toaster 
+            position="bottom-right" 
+            richColors 
+            closeButton
+            theme="system"
+          />
         </ThemeProvider>
       </body>
     </html>

@@ -1,156 +1,274 @@
 "use client";
 
-import { motion, cubicBezier } from "framer-motion";
-import { Github, Linkedin, Mail, Heart } from "lucide-react";
-import type { LucideIcon } from "lucide-react"; // Import type for better type safety
+import { motion } from "framer-motion";
+import { 
+  Github, 
+  Linkedin, 
+  Mail, 
+  Heart, 
+  ArrowUp,
+  Terminal,
+  Sparkles,
+  Code2,
+  Coffee
+} from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-// --- DATA ---
-interface SocialLink {
-  icon: LucideIcon;
-  name: string;
-  href: string;
-  a11yLabel: string; // Added a11yLabel
-}
-
-const socialLinks: SocialLink[] = [
-  { 
-    icon: Github, 
-    name: "GitHub", 
-    href: "https://github.com/yourusername",
-    a11yLabel: "Link to GitHub profile"
-  },
-  { 
-    icon: Linkedin, 
-    name: "LinkedIn", 
-    href: "https://linkedin.com/in/yourusername",
-    a11yLabel: "Link to LinkedIn profile"
-  },
-  { 
-    icon: Mail, 
-    name: "Email", 
-    href: "mailto:your@email.com",
-    a11yLabel: "Send an email"
-  },
-];
-
-interface Technology {
-  name: string;
-  href: string;
-}
-
-const technologies: Technology[] = [
-  { name: "Next.js", href: "https://nextjs.org/" },
-  { name: "Framer Motion", href: "https://www.framer.com/motion/" },
-  // Optional: Add another one to test the separator
-  // { name: "Tailwind CSS", href: "https://tailwindcss.com/" }, 
-];
-
-// --- ANIMATION VARIANTS ---
-const fadeUp = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: cubicBezier(0.25, 0.46, 0.45, 0.94) },
-  },
-};
-
-const heartBeat = {
-  // A small, subtle beat/pulse on initial view
-  initial: { scale: 1 },
-  animate: {
-    scale: [1, 1.05, 1], // Pulse effect
-    transition: { 
-      duration: 1.5, 
-      ease: cubicBezier(0.42, 0, 0.58, 1),
-      repeatType: "loop" as const,
-      repeat: Infinity, 
-      repeatDelay: 3 
-    },
-  },
-};
-
-
-// --- COMPONENT ---
 interface FooterProps {
   developerName?: string;
 }
 
-export default function Footer({ developerName = "Your Name" }: FooterProps) {
+const socialLinks = [
+  { 
+    icon: Github, 
+    href: "https://github.com/madhav9757", 
+    label: "GitHub",
+    color: "hover:text-gray-900 dark:hover:text-white"
+  },
+  { 
+    icon: Linkedin, 
+    href: "https://linkedin.com/in/madhavsemwal", 
+    label: "LinkedIn",
+    color: "hover:text-blue-600"
+  },
+  { 
+    icon: Mail, 
+    href: "mailto:madhavsemwal9@gmail.com", 
+    label: "Email",
+    color: "hover:text-red-500"
+  }
+];
+
+const quickLinks = [
+  { label: "Home", href: "#home" },
+  { label: "Projects", href: "#projects" },
+  { label: "Skills", href: "#skills" },
+  { label: "Experience", href: "#experience" },
+  { label: "Education", href: "#education" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" }
+];
+
+const technologies = [
+  { name: "React", href: "https://react.dev/" },
+  { name: "Next.js", href: "https://nextjs.org/" },
+  { name: "TypeScript", href: "https://www.typescriptlang.org/" },
+  { name: "TailwindCSS", href: "https://tailwindcss.com/" },
+  { name: "Framer Motion", href: "https://www.framer.com/motion/" }
+];
+
+export default function Footer({ developerName = "Madhav Semwal" }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToSection = (href: string) => {
+    const id = href.replace("#", "");
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <motion.footer
-      variants={fadeUp}
-      initial="hidden"
-      // Added margin to viewport for earlier trigger on long pages
-      viewport={{ once: true, margin: "0px 0px -50px 0px" }} 
-      whileInView="visible"
-      className="py-10 border-t border-border bg-background"
-    >
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="relative mt-32 border-t border-border/40 bg-muted/20">
+      {/* Decorative Top Border */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
 
-          {/* LEFT SECTION */}
-          <div className="flex flex-col items-center md:items-start gap-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              {/* Heartbeat animation added */}
-              <motion.span variants={heartBeat} initial="initial" animate="animate">
-                <Heart size={14} className="text-red-500 fill-red-500/70" />
-              </motion.span>
-              
-              <span>Built with</span>
-
-              {technologies.map((tech, i) => (
-                <a
-                  key={tech.name}
-                  href={tech.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-primary hover:underline"
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Top Section */}
+        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand Column */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-1"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Terminal className="w-6 h-6 text-white" />
+                </div>
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute -top-1 -right-1"
                 >
-                  {tech.name}
-                  {/* Better separator logic: only add separator if it's NOT the last item */}
-                  {i < technologies.length - 1 && <span className="mx-1 text-muted-foreground">&</span>}
-                </a>
-              ))}
+                  <Sparkles className="w-4 h-4 text-yellow-400" />
+                </motion.div>
+              </div>
+              <span className="text-2xl font-bold">{developerName}</span>
             </div>
-
-            <p className="text-xs text-muted-foreground text-center md:text-left">
-              &copy; {currentYear}{" "}
-              <span className="font-semibold text-foreground">{developerName}</span>. All rights reserved.
+            <p className="text-muted-foreground mb-4 leading-relaxed">
+              Full-Stack Developer crafting exceptional digital experiences with modern technologies.
             </p>
-          </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Code2 className="w-4 h-4" />
+              <span>Building the future, one line at a time</span>
+            </div>
+          </motion.div>
 
-          {/* SOCIALS */}
-          <ul className="flex items-center gap-6">
-            {socialLinks.map((item) => {
-              // Destructure for cleaner access
-              const { icon: Icon, name, href, a11yLabel } = item; 
-              return (
-                <motion.li
-                  key={name} // Use name as key, or better, use a unique ID if available
-                  whileHover={{ scale: 1.15 }} // Slightly increased hover scale
-                  whileTap={{ scale: 0.9 }} // Slightly increased tap/click scale
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }} // Added transition for a snappier feel
-                >
+          {/* Quick Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              {quickLinks.map((link) => (
+                <li key={link.label}>
+                  <button
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm hover:translate-x-1 inline-block"
+                  >
+                    → {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Technologies */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <h3 className="text-lg font-bold mb-4">Technologies</h3>
+            <ul className="space-y-2">
+              {technologies.map((tech) => (
+                <li key={tech.name}>
                   <a
-                    href={href}
+                    href={tech.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    // Accessibility enhancement: Add aria-label
-                    aria-label={a11yLabel} 
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover:text-blue-500 transition-colors text-sm hover:translate-x-1 inline-block"
                   >
-                    <Icon size={24} /> {/* Increased icon size for better visibility/click target */}
+                    → {tech.name}
                   </a>
-                </motion.li>
-              );
-            })}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
 
+          {/* Connect */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            <h3 className="text-lg font-bold mb-4">Connect</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Let's build something amazing together!
+            </p>
+            <div className="flex gap-3 mb-6">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <motion.a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`p-3 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground transition-all ${social.color}`}
+                    aria-label={social.label}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </motion.a>
+                );
+              })}
+            </div>
+            <Button
+              onClick={() => scrollToSection("#contact")}
+              size="sm"
+              className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+            >
+              Get In Touch
+            </Button>
+          </motion.div>
         </div>
+
+        {/* Divider */}
+        <div className="border-t border-border/40" />
+
+        {/* Bottom Section */}
+        <div className="py-8 flex flex-col md:flex-row justify-between items-center gap-6">
+          {/* Copyright & Credits */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="flex flex-col sm:flex-row items-center gap-4 text-sm text-muted-foreground"
+          >
+            <div className="flex items-center gap-2">
+              <span>© {currentYear}</span>
+              <span className="font-bold text-foreground">{developerName}</span>
+              <span>•</span>
+              <span>All rights reserved</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>Made with</span>
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{ 
+                  duration: 1,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+              </motion.div>
+              <span>and</span>
+              <Coffee className="w-4 h-4 text-amber-600" />
+            </div>
+          </motion.div>
+
+          {/* Back to Top Button */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <Button
+              onClick={scrollToTop}
+              variant="outline"
+              size="sm"
+              className="rounded-full px-6 hover:border-blue-500 hover:bg-blue-500/5 group"
+            >
+              <span className="mr-2">Back to Top</span>
+              <ArrowUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Extra Info */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="pb-6 text-center"
+        >
+          <p className="text-xs text-muted-foreground">
+            Designed & Developed by {developerName} • Powered by Next.js, React & TailwindCSS
+          </p>
+        </motion.div>
       </div>
-    </motion.footer>
+
+      {/* Decorative Bottom Gradient */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+    </footer>
   );
 }
