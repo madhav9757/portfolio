@@ -37,7 +37,7 @@ const education = {
 
 export default function Education() {
   return (
-    <section className="relative py-24">
+    <section className="relative py-16">
       {/* Decorative Background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
@@ -49,7 +49,7 @@ export default function Education() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -61,7 +61,7 @@ export default function Education() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Education{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             & Learning
           </span>
         </h2>
@@ -82,7 +82,7 @@ export default function Education() {
       >
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 rounded-3xl overflow-hidden group">
           {/* Gradient Effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
           
           <CardHeader className="relative pb-4">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
@@ -92,7 +92,7 @@ export default function Education() {
                 <motion.div
                   whileHover={{ rotate: 360, scale: 1.1 }}
                   transition={{ duration: 0.5 }}
-                  className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg flex-shrink-0"
+                  className="w-16 h-16 rounded-xl bg-linear-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shrink-0"
                 >
                   <GraduationCap className="w-8 h-8" />
                 </motion.div>
@@ -157,7 +157,7 @@ export default function Education() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.05 }}
                     whileHover={{ scale: 1.05, y: -2 }}
-                    className="px-3 py-2 text-xs font-medium rounded-lg bg-muted hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 hover:border-purple-500/20 border border-transparent transition-all cursor-default text-center"
+                    className="px-3 py-2 text-xs font-medium rounded-lg bg-muted hover:bg-linear-to-r hover:from-purple-500/10 hover:to-blue-500/10 hover:border-purple-500/20 border border-transparent transition-all cursor-default text-center"
                   >
                     {highlight}
                   </motion.div>
@@ -181,7 +181,7 @@ export default function Education() {
                     transition={{ delay: i * 0.05 }}
                     className="flex items-start gap-3 text-sm leading-relaxed group/item"
                   >
-                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0 group-hover/item:scale-150 transition-transform" />
                     <span>{achievement}</span>
                   </motion.li>
                 ))}

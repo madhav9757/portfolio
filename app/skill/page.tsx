@@ -11,10 +11,10 @@ export default function SkillPage() {
     <div className="min-h-screen bg-background relative flex flex-col">
       <Navbar />
       
-      <main className="flex-grow relative overflow-hidden py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 mt-16">
+      <main className="grow relative overflow-hidden py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 mt-12">
         {/* Background Decorative Elements */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 to-transparent -z-10" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-linear-to-b from-primary/5 to-transparent -z-10" />
           <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] -z-10 animate-pulse" />
           <div className="absolute bottom-[20%] left-[-10%] w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[120px] -z-10 animate-pulse" style={{ animationDelay: '2s' }} />
         </div>
@@ -25,7 +25,7 @@ export default function SkillPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: easeOut }}
-            className="text-center mb-10 sm:mb-12 md:mb-16"
+            className="text-center mb-8 sm:mb-10"
           >
             <div className="flex justify-center mb-6">
               <BadgeItem icon={Sparkles} text="Technical Expertise" color="bg-primary/10 text-primary" delay={0.1} />
@@ -55,7 +55,7 @@ export default function SkillPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="bg-card/30 backdrop-blur-md border border-border/50 rounded-[2.5rem] p-4 sm:p-10 shadow-2xl relative overflow-hidden"
           >
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-primary to-purple-500 opacity-50" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-primary to-purple-500 opacity-50" />
             <Skills hideHeader={true} />
           </motion.div>
 
@@ -67,9 +67,9 @@ export default function SkillPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-block p-1 rounded-3xl bg-gradient-to-b from-border/50 to-transparent mb-12">
+            <div className="inline-block p-1 rounded-3xl bg-linear-to-b from-border/50 to-transparent mb-12">
               <div className="bg-card/80 backdrop-blur-sm rounded-[1.4rem] px-8 py-12 border border-border/50 shadow-2xl max-w-4xl mx-auto">
-                <h3 className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                <h3 className="text-3xl sm:text-4xl font-bold mb-4 bg-linear-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                   Ready to build something?
                 </h3>
                 <p className="text-muted-foreground mb-10 max-w-md mx-auto text-lg leading-relaxed">

@@ -123,7 +123,7 @@ const BlogCard = ({ post, index }: { post: typeof blogPosts[0]; index: number })
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
           
           {/* Featured Badge */}
           {isFeatured && (
@@ -132,7 +132,7 @@ const BlogCard = ({ post, index }: { post: typeof blogPosts[0]; index: number })
               animate={{ scale: 1 }}
               className="absolute top-4 left-4"
             >
-              <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0">
+              <Badge className="bg-linear-to-r from-yellow-500 to-orange-500 text-white border-0">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 Featured
               </Badge>
@@ -251,13 +251,13 @@ const BlogCard = ({ post, index }: { post: typeof blogPosts[0]; index: number })
 
 export default function BlogSection() {
   return (
-    <section className="relative py-24">
+    <section className="relative py-16">
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -269,7 +269,7 @@ export default function BlogSection() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Latest{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Insights
           </span>
         </h2>

@@ -149,7 +149,7 @@ export default function Navbar() {
     <>
       {/* Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-[100] origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 z-100 origin-left"
         style={{ scaleX }}
       />
 
@@ -167,7 +167,7 @@ export default function Navbar() {
               : "bg-white/50 dark:bg-gray-900/50 backdrop-blur-md border-gray-200/30 dark:border-gray-800/30"
           }`}>
             {/* Gradient Border Effect */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10" />
+            <div className="absolute inset-0 rounded-full bg-linear-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10" />
             
             <div className="flex items-center justify-between px-4 py-3">
               {/* Logo */}
@@ -178,7 +178,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 cursor-pointer group"
               >
                 <div className="relative">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
                     <Terminal className="w-5 h-5 text-white" />
                   </div>
                   <motion.div
@@ -216,7 +216,7 @@ export default function Navbar() {
                       {isActive && (
                         <motion.div
                           layoutId="active-pill"
-                          className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg"
+                          className="absolute inset-0 bg-linear-to-r from-blue-500 to-purple-600 rounded-full shadow-lg"
                           transition={{ type: "spring", stiffness: 380, damping: 30 }}
                         />
                       )}
@@ -262,7 +262,7 @@ export default function Navbar() {
                   <Button
                     asChild
                     size="sm"
-                    className="rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30"
+                    className="rounded-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30"
                   >
                     <a href="/resume.pdf" download>
                       <Download className="w-4 h-4 mr-2" />
@@ -314,7 +314,7 @@ export default function Navbar() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
                       <Terminal className="w-5 h-5 text-white" />
                     </div>
                     <span className="font-bold text-xl">Madhav.dev</span>
@@ -342,7 +342,7 @@ export default function Navbar() {
                         onClick={() => scrollToSection(link.id, link.path)}
                         className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all ${
                           isActive
-                            ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/30"
+                            ? "bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/30"
                             : "hover:bg-gray-100 dark:hover:bg-gray-800"
                         }`}
                       >
@@ -383,7 +383,7 @@ export default function Navbar() {
                           rel="noopener noreferrer"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all"
+                          className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all"
                           aria-label={social.label}
                         >
                           <Icon className="w-5 h-5" />
@@ -396,7 +396,7 @@ export default function Navbar() {
                   <Button
                     asChild
                     size="lg"
-                    className="w-full rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30"
+                    className="w-full rounded-2xl bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30"
                   >
                     <a href="/resume.pdf" download>
                       <Download className="w-5 h-5 mr-2" />

@@ -149,12 +149,12 @@ const CertificateCard = ({ cert, index }: { cert: typeof certificates[0]; index:
             alt={cert.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
           
           {/* Badges */}
           <div className="absolute top-4 left-4 flex flex-wrap gap-2">
             {cert.featured && (
-              <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0">
+              <Badge className="bg-linear-to-r from-yellow-500 to-orange-500 text-white border-0">
                 <Star className="w-3 h-3 mr-1" />
                 Featured
               </Badge>
@@ -298,7 +298,7 @@ const CertificateCard = ({ cert, index }: { cert: typeof certificates[0]; index:
 
 export default function CertificatesSection() {
   return (
-    <section className="relative py-24">
+    <section className="relative py-16">
       {/* Decorative Background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl" />
@@ -310,7 +310,7 @@ export default function CertificatesSection() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -322,7 +322,7 @@ export default function CertificatesSection() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Credentials &{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Recognition
           </span>
         </h2>
@@ -338,7 +338,7 @@ export default function CertificatesSection() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
+        className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10"
       >
         {achievements.map((achievement, i) => {
           const Icon = achievement.icon;
@@ -378,9 +378,9 @@ export default function CertificatesSection() {
         transition={{ delay: 0.5 }}
         className="mt-16 text-center"
       >
-        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20">
+        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-linear-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-yellow-500 to-orange-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-linear-to-r from-yellow-500 to-orange-600 flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">

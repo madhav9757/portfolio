@@ -166,7 +166,7 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-16 overflow-hidden">
       {/* Decorative Background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" />
@@ -178,7 +178,7 @@ export default function ContactForm() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -190,7 +190,7 @@ export default function ContactForm() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Let's Work{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Together
           </span>
         </h2>
@@ -227,7 +227,7 @@ export default function ContactForm() {
                       <motion.div
                         whileHover={{ rotate: 360, scale: 1.1 }}
                         transition={{ duration: 0.5 }}
-                        className={`p-3 rounded-xl ${info.bgColor} ${info.color} flex-shrink-0`}
+                        className={`p-3 rounded-xl ${info.bgColor} ${info.color} shrink-0`}
                       >
                         <Icon className="w-5 h-5" />
                       </motion.div>
@@ -260,10 +260,10 @@ export default function ContactForm() {
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
           >
-            <Card className="border-border/50 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 rounded-2xl overflow-hidden">
+            <Card className="bg-linear-to-br from-green-500/10 to-emerald-500/10 border-green-500/20 rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
                   <div>
                     <p className="font-semibold text-green-600 dark:text-green-400 mb-1">
                       Quick Response Guaranteed
@@ -426,7 +426,7 @@ export default function ContactForm() {
                   <Button
                     type="submit"
                     disabled={status === "sending" || status === "sent"}
-                    className="w-full h-14 text-base font-bold rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-14 text-base font-bold rounded-xl bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {status === "sending" && (
                       <>

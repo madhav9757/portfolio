@@ -173,13 +173,13 @@ const SkillCard = ({ skill, index }: { skill: typeof skills[0]; index: number })
                 <span className="text-muted-foreground font-mono text-xs">{tech.level}%</span>
               </div>
               
-              <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+              <div className="relative h-1 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: `${tech.level}%` }}
                   viewport={{ once: true }}
                   transition={{ duration: 1, delay: i * 0.1, ease: "easeOut" }}
-                  className={`h-full rounded-full bg-gradient-to-r ${skill.color}`}
+                  className={`h-full rounded-full bg-linear-to-r ${skill.color}`}
                 />
               </div>
             </motion.div>
@@ -196,14 +196,14 @@ interface SkillsProps {
 
 export default function Skills({ hideHeader = false }: SkillsProps) {
   return (
-    <section className={`relative ${hideHeader ? 'py-0' : 'py-24'}`}>
+    <section className={`relative ${hideHeader ? 'py-0' : 'py-16'}`}>
       {/* Section Header */}
       {!hideHeader && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
           <Badge 
             variant="outline" 
@@ -215,7 +215,7 @@ export default function Skills({ hideHeader = false }: SkillsProps) {
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Skills &{" "}
-            <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
               Expertise
             </span>
           </h2>

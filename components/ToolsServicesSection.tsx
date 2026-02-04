@@ -256,7 +256,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
                   transition={{ delay: i * 0.05 }}
                   className="flex items-start gap-2 text-sm"
                 >
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                   <span>{feature}</span>
                 </motion.li>
               ))}
@@ -282,7 +282,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
 
           {/* CTA */}
           <Button
-            className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white group/btn"
+            className="w-full rounded-xl bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white group/btn"
           >
             Get Started
             <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
@@ -295,13 +295,13 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
 
 export default function ToolsServicesSection() {
   return (
-    <section className="relative py-24">
+    <section className="relative py-16">
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -313,7 +313,7 @@ export default function ToolsServicesSection() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           What I{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Offer
           </span>
         </h2>
@@ -374,7 +374,7 @@ export default function ToolsServicesSection() {
             viewport={{ once: true }}
             className="mt-12 text-center"
           >
-            <Card className="border-border/50 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20 rounded-2xl inline-block">
+            <Card className="bg-linear-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20 rounded-2xl inline-block">
               <CardContent className="p-6">
                 <p className="text-sm text-muted-foreground">
                   <strong className="text-foreground">And many more tools</strong> in my arsenal to deliver the best solutions for your project!
@@ -403,8 +403,8 @@ export default function ToolsServicesSection() {
                       <CardContent className="p-6">
                         <div className="flex items-start gap-6">
                           {/* Step Number */}
-                          <div className="flex-shrink-0">
-                            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                          <div className="shrink-0">
+                            <div className="w-16 h-16 rounded-xl bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
                               {step.step}
                             </div>
                           </div>
@@ -423,7 +423,7 @@ export default function ToolsServicesSection() {
                           </div>
 
                           {/* Arrow */}
-                          <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                             <ArrowRight className="w-6 h-6 text-blue-500" />
                           </div>
                         </div>
@@ -445,9 +445,9 @@ export default function ToolsServicesSection() {
         transition={{ delay: 0.5 }}
         className="mt-16 text-center"
       >
-        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-linear-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-linear-to-r from-blue-500 to-purple-600 flex items-center justify-center">
               <Rocket className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">
@@ -457,7 +457,7 @@ export default function ToolsServicesSection() {
           </div>
           <Button
             size="lg"
-            className="rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+            className="rounded-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Get In Touch

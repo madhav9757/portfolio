@@ -86,7 +86,7 @@ const values = [
 
 export default function About() {
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-16 overflow-hidden">
       {/* Decorative Background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
@@ -98,7 +98,7 @@ export default function About() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -110,7 +110,7 @@ export default function About() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           About{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Me
           </span>
         </h2>
@@ -130,13 +130,13 @@ export default function About() {
           className="lg:col-span-1"
         >
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm rounded-3xl overflow-hidden sticky top-24">
-            <CardContent className="p-8">
+            <CardContent className="p-6">
               {/* Avatar */}
               <div className="relative mb-6">
                 <div className="relative w-32 h-32 mx-auto">
                   <Avatar className="w-full h-full border-4 border-background shadow-2xl">
                     <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Madhav" alt="Madhav Semwal" />
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-4xl font-bold">
+                    <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-white text-4xl font-bold">
                       MS
                     </AvatarFallback>
                   </Avatar>
@@ -149,7 +149,7 @@ export default function About() {
                       duration: 2,
                       repeat: Infinity
                     }}
-                    className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-lg -z-10"
+                    className="absolute -inset-1 bg-linear-to-r from-blue-500 to-purple-600 rounded-full blur-lg -z-10"
                   />
                   {/* Status Indicator */}
                   <div className="absolute bottom-2 right-2">
@@ -229,9 +229,9 @@ export default function About() {
         >
           {/* Bio */}
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm rounded-3xl overflow-hidden">
-            <CardContent className="p-8">
+            <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full" />
+                <div className="w-1 h-8 bg-linear-to-b from-blue-500 to-purple-600 rounded-full" />
                 <h3 className="text-2xl font-bold">My Story</h3>
               </div>
               
@@ -304,9 +304,9 @@ export default function About() {
 
           {/* Values */}
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm rounded-3xl overflow-hidden">
-            <CardContent className="p-8">
+            <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full" />
+                <div className="w-1 h-8 bg-linear-to-b from-blue-500 to-purple-600 rounded-full" />
                 <h3 className="text-2xl font-bold">Core Values</h3>
               </div>
 
@@ -320,7 +320,7 @@ export default function About() {
                     transition={{ delay: i * 0.05 }}
                     className="flex items-start gap-3 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors group"
                   >
-                    <Target className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0 group-hover:rotate-180 transition-transform duration-500" />
+                    <Target className="w-5 h-5 text-blue-500 mt-0.5 shrink-0 group-hover:rotate-180 transition-transform duration-500" />
                     <div>
                       <h4 className="font-semibold mb-1">{value.title}</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">

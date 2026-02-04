@@ -70,7 +70,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-16 pb-12">
       
       {/* Animated Background Elements */}
       <div className="absolute inset-0 -z-10">
@@ -130,7 +130,7 @@ export default function Hero() {
         animate="visible"
       >
         {/* Status Badge */}
-        <motion.div  className="flex justify-center mb-8">
+        <motion.div  className="flex justify-center mb-6">
           <Badge 
             variant="outline" 
             className="px-5 py-2.5 border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400 backdrop-blur-sm rounded-full hover:bg-blue-500/20 transition-colors cursor-pointer group"
@@ -146,16 +146,16 @@ export default function Hero() {
         </motion.div>
 
         {/* Main Headline */}
-        <motion.div  className="space-y-6 mb-8">
+        <motion.div  className="space-y-4 mb-6">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight">
             Building Digital
             <br />
             <span className="relative inline-block">
-              <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient-x">
+              <span className="bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient-x">
                 Experiences
               </span>
               <motion.div
-                className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-xl -z-10"
+                className="absolute -inset-1 bg-linear-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-xl -z-10"
                 animate={{ opacity: [0.5, 0.8, 0.5] }}
                 transition={{ duration: 3, repeat: Infinity }}
               />
@@ -172,7 +172,7 @@ export default function Hero() {
 
         {/* CTA Buttons */}
         <motion.div 
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
         >
           <motion.div
             whileHover={{ scale: 1.05 }}
@@ -181,7 +181,7 @@ export default function Hero() {
             <Button 
               size="lg" 
               onClick={scrollToContact}
-              className="h-14 px-8 text-base bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all group"
+              className="h-14 px-8 text-base bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all group"
             >
               Let's Talk
               <Rocket className="ml-2 w-5 h-5 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
@@ -208,7 +208,7 @@ export default function Hero() {
 
         {/* Social Links */}
         <motion.div 
-          className="flex items-center justify-center gap-4 mb-16"
+          className="flex items-center justify-center gap-4 mb-12"
         >
           {socialLinks.map((social, i) => {
             const Icon = social.icon;
@@ -233,9 +233,9 @@ export default function Hero() {
         <motion.div 
           className="relative"
         >
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent mb-8" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-linear-to-r from-transparent via-border to-transparent mb-8" />
           
-          <div className="grid grid-cols-3 gap-8 md:gap-16 max-w-2xl mx-auto pt-12">
+          <div className="grid grid-cols-3 gap-6 md:gap-12 max-w-2xl mx-auto pt-8">
             {stats.map((stat, i) => (
               <motion.div
                 key={i}
@@ -244,7 +244,7 @@ export default function Hero() {
                 transition={{ delay: 1 + i * 0.1 }}
                 className="text-center group cursor-default"
               >
-                <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
+                <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
                   {stat.number}
                 </div>
                 <div className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider font-medium">

@@ -92,7 +92,7 @@ export default function ProjectsPage() {
       
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 py-20 mt-16 relative">
+      <main className="grow max-w-7xl mx-auto px-6 py-12 mt-12 relative">
         {/* Dynamic Background */}
         <div className="absolute inset-0 pointer-events-none -z-10">
           <motion.div 
@@ -125,7 +125,7 @@ export default function ProjectsPage() {
         </div>
 
         {/* Hero Section */}
-        <header className="mb-20 text-center space-y-8 relative">
+        <header className="mb-12 text-center space-y-8 relative">
           <motion.div 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -143,7 +143,7 @@ export default function ProjectsPage() {
               className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-none"
             >
               CRAFTED <br />
-              <span className="bg-gradient-to-r from-primary via-purple-500 to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-primary via-purple-500 to-blue-600 bg-clip-text text-transparent">
                 WITH CODE
               </span>
             </motion.h1>
@@ -188,11 +188,11 @@ export default function ProjectsPage() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="relative group max-w-5xl mx-auto mb-20"
+          className="relative group max-w-5xl mx-auto mb-12"
         >
           {/* Glass Container */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/20 to-blue-600/20 blur-3xl opacity-20 -z-10" />
-          <div className="p-1 rounded-[2.5rem] bg-gradient-to-b from-white/10 to-transparent border border-white/10 shadow-2xl backdrop-blur-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-linear-to-r from-primary/20 via-purple-500/20 to-blue-600/20 blur-3xl opacity-20 -z-10" />
+          <div className="p-1 rounded-[2.5rem] bg-linear-to-b from-white/10 to-transparent border border-white/10 shadow-2xl backdrop-blur-2xl overflow-hidden">
             <div className="flex flex-col md:flex-row items-stretch gap-2 bg-background/40 backdrop-blur-3xl rounded-[2.3rem] p-2">
               <div className="relative flex-1 group">
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -287,7 +287,7 @@ export default function ProjectsPage() {
                     <Link href={repo.html_url} target="_blank" className="block h-full">
                       <Card className="h-full border-border/40 bg-card/30 backdrop-blur-md hover:bg-card/60 hover:border-primary/40 hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.1)] transition-all duration-500 rounded-[3rem] overflow-hidden flex flex-col relative group">
                         {/* Hover Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                         
                         {/* Status ID */}
                         <div className="absolute top-8 right-10 flex items-center gap-2">
@@ -300,7 +300,7 @@ export default function ProjectsPage() {
                         <CardHeader className="p-10 pb-6 relative">
                           <motion.div 
                             whileHover={{ rotate: 5, scale: 1.1 }}
-                            className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-primary to-purple-600 p-0.5 mb-8 shadow-xl shadow-primary/20"
+                            className="w-16 h-16 rounded-3xl bg-linear-to-br from-primary to-purple-600 p-0.5 mb-8 shadow-xl shadow-primary/20"
                           >
                             <div className="w-full h-full bg-background rounded-[1.4rem] flex items-center justify-center text-primary">
                               <Github className="w-8 h-8" />

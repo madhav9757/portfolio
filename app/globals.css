@@ -103,10 +103,17 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold tracking-tight;
   }
 }
@@ -142,7 +149,8 @@ html {
 
 /* Gradient Text Animation */
 @keyframes gradient-x {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -157,7 +165,8 @@ html {
 
 /* Floating Animation */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -171,7 +180,8 @@ html {
 
 /* Pulse Glow */
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
   }
@@ -187,7 +197,7 @@ html {
 
 /* Grid Background */
 .grid-bg {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgb(var(--border)) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(var(--border)) 1px, transparent 1px);
   background-size: 40px 40px;
@@ -219,7 +229,7 @@ html {
 }
 
 .shine::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -240,7 +250,7 @@ html {
 }
 
 .noise::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   opacity: 0.03;
@@ -260,7 +270,7 @@ html {
 }
 
 .skeleton {
-  @apply bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800;
+  @apply bg-linear-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800;
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
 }
@@ -272,7 +282,7 @@ html {
 
 /* Button Variants */
 .btn-primary {
-  @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full px-6 py-3 font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95;
+  @apply bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-full px-6 py-3 font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95;
 }
 
 .btn-secondary {
@@ -301,27 +311,27 @@ html {
   .text-responsive-xs {
     @apply text-xs sm:text-sm;
   }
-  
+
   .text-responsive-sm {
     @apply text-sm sm:text-base;
   }
-  
+
   .text-responsive-base {
     @apply text-base sm:text-lg;
   }
-  
+
   .text-responsive-lg {
     @apply text-lg sm:text-xl md:text-2xl;
   }
-  
+
   .text-responsive-xl {
     @apply text-xl sm:text-2xl md:text-3xl;
   }
-  
+
   .text-responsive-2xl {
     @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
   }
-  
+
   .text-responsive-3xl {
     @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
   }

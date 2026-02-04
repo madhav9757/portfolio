@@ -70,7 +70,7 @@ const ProjectCard = ({ repo }: { repo: Repo }) => {
             <motion.div 
               animate={{ rotate: isHovered ? 360 : 0 }}
               transition={{ duration: 0.5 }}
-              className="p-3 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 text-blue-500 group-hover:from-blue-500 group-hover:to-purple-600 group-hover:text-white transition-all"
+              className="p-3 rounded-xl bg-linear-to-br from-blue-500/10 to-purple-500/10 text-blue-500 group-hover:from-blue-500 group-hover:to-purple-600 group-hover:text-white transition-all"
             >
               <Github className="w-6 h-6" />
             </motion.div>
@@ -128,7 +128,7 @@ const ProjectCard = ({ repo }: { repo: Repo }) => {
           <div className="flex gap-2">
             <Button 
               asChild 
-              className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/20 group/btn"
+              className="flex-1 rounded-xl bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/20 group/btn"
             >
               <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
                 <span>View Code</span>
@@ -215,13 +215,13 @@ export default function Projects() {
   }
 
   return (
-    <section className="py-24 relative">
+    <section className="py-16 relative">
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -233,7 +233,7 @@ export default function Projects() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Recent{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Projects
           </span>
         </h2>

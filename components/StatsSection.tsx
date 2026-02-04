@@ -136,7 +136,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
     >
       <Card className="relative overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 rounded-2xl h-full">
         {/* Gradient Background Effect */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+        <div className={`absolute inset-0 bg-linear-to-br ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
         
         {/* Animated Icon Background */}
         <motion.div
@@ -181,7 +181,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
 
           {/* Counter */}
           <div className="mb-2">
-            <h3 className={`text-4xl md:text-5xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+            <h3 className={`text-4xl md:text-5xl font-bold bg-linear-to-r ${stat.color} bg-clip-text text-transparent`}>
               <AnimatedCounter value={stat.value} suffix={stat.suffix} />
             </h3>
           </div>
@@ -202,7 +202,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
               initial={{ width: 0 }}
               animate={isInView ? { width: "100%" } : { width: 0 }}
               transition={{ duration: 1.5, delay: index * 0.1, ease: "easeOut" }}
-              className={`h-full rounded-full bg-gradient-to-r ${stat.color}`}
+              className={`h-full rounded-full bg-linear-to-r ${stat.color}`}
             />
           </div>
         </CardContent>
@@ -213,7 +213,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
 
 export default function StatsSection() {
   return (
-    <section className="relative py-24">
+    <section className="relative py-16">
       {/* Decorative Background */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
@@ -225,7 +225,7 @@ export default function StatsSection() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -237,7 +237,7 @@ export default function StatsSection() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Numbers That{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Matter
           </span>
         </h2>
@@ -263,9 +263,9 @@ export default function StatsSection() {
         transition={{ delay: 0.8 }}
         className="mt-16 text-center"
       >
-        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-linear-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-linear-to-r from-blue-500 to-purple-600 flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">

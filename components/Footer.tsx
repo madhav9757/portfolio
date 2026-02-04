@@ -71,14 +71,14 @@ export default function Footer({ developerName = "Madhav Semwal" }: FooterProps)
   };
 
   return (
-    <footer className="relative mt-32 border-t border-border/40 bg-muted/20">
+    <footer className="relative mt-20 border-t border-border/40 bg-muted/20">
       {/* Decorative Top Border */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500" />
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Top Section */}
-        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -88,7 +88,7 @@ export default function Footer({ developerName = "Madhav Semwal" }: FooterProps)
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                   <Terminal className="w-6 h-6 text-white" />
                 </div>
                 <motion.div
@@ -192,7 +192,7 @@ export default function Footer({ developerName = "Madhav Semwal" }: FooterProps)
             <Button
               onClick={() => scrollToSection("#contact")}
               size="sm"
-              className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+              className="w-full rounded-xl bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
             >
               Get In Touch
             </Button>
@@ -268,7 +268,7 @@ export default function Footer({ developerName = "Madhav Semwal" }: FooterProps)
       </div>
 
       {/* Decorative Bottom Gradient */}
-      <div className="h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+      <div className="h-1 bg-linear-to-r from-transparent via-blue-500/50 to-transparent" />
     </footer>
   );
 }

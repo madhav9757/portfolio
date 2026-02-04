@@ -108,7 +108,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] 
     >
       <Card className="relative overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 rounded-3xl">
         {/* Quote Icon Background */}
-        <div className="absolute -top-6 -left-6 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-2xl" />
+        <div className="absolute -top-6 -left-6 w-32 h-32 bg-linear-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-2xl" />
         <Quote className="absolute top-6 right-6 w-16 h-16 text-blue-500/10" />
 
         <CardContent className="relative p-8 md:p-10">
@@ -134,7 +134,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] 
           <div className="flex items-center gap-4 mb-6">
             <Avatar className="w-14 h-14 border-2 border-blue-500/20">
               <AvatarImage src={testimonial.image} alt={testimonial.name} />
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
+              <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-white font-bold">
                 {testimonial.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
@@ -201,7 +201,7 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-16 overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse" />
@@ -213,7 +213,7 @@ export default function TestimonialsSection() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -225,7 +225,7 @@ export default function TestimonialsSection() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           What Clients{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Say
           </span>
         </h2>
@@ -319,9 +319,9 @@ export default function TestimonialsSection() {
         transition={{ delay: 0.5 }}
         className="mt-16 text-center"
       >
-        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+        <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-4 rounded-2xl bg-linear-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-linear-to-r from-green-500 to-emerald-600 flex items-center justify-center">
               <ThumbsUp className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">

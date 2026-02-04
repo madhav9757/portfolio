@@ -110,7 +110,7 @@ export default function DesktopNav({
                       duration: 2.5,
                       ease: "easeInOut",
                     }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent w-1/2 h-full skew-x-12"
+                    className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent w-1/2 h-full skew-x-12"
                   />
                 </a>
               </Button>

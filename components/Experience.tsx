@@ -71,7 +71,7 @@ const ExperienceCard = ({ experience, index }: { experience: typeof experiences[
     >
       <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 rounded-2xl overflow-hidden group">
         {/* Gradient Effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
         
         <CardHeader className="relative pb-4">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
@@ -81,7 +81,7 @@ const ExperienceCard = ({ experience, index }: { experience: typeof experiences[
               <motion.div
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.5 }}
-                className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg flex-shrink-0"
+                className="w-14 h-14 rounded-xl bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shrink-0"
               >
                 {experience.logo}
               </motion.div>
@@ -133,7 +133,7 @@ const ExperienceCard = ({ experience, index }: { experience: typeof experiences[
             {experience.highlights.map((highlight) => (
               <div
                 key={highlight}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 text-xs font-medium"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-linear-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 text-xs font-medium"
               >
                 <Award className="w-3 h-3 text-blue-500" />
                 {highlight}
@@ -159,7 +159,7 @@ const ExperienceCard = ({ experience, index }: { experience: typeof experiences[
                   transition={{ delay: i * 0.05 }}
                   className="flex items-start gap-3 text-sm leading-relaxed group/item"
                 >
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0 group-hover/item:scale-110 transition-transform" />
+                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0 group-hover/item:scale-110 transition-transform" />
                   <span>{achievement}</span>
                 </motion.li>
               ))}
@@ -177,7 +177,7 @@ const ExperienceCard = ({ experience, index }: { experience: typeof experiences[
                 <motion.span
                   key={tech}
                   whileHover={{ scale: 1.05, y: -2 }}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-muted hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 hover:border-blue-500/20 border border-transparent transition-all cursor-default"
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-muted hover:bg-linear-to-r hover:from-blue-500/10 hover:to-purple-500/10 hover:border-blue-500/20 border border-transparent transition-all cursor-default"
                 >
                   {tech}
                 </motion.span>
@@ -192,13 +192,13 @@ const ExperienceCard = ({ experience, index }: { experience: typeof experiences[
 
 export default function Experience() {
   return (
-    <section className="relative py-24">
+    <section className="relative py-16">
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-16"
+        className="text-center mb-10"
       >
         <Badge 
           variant="outline" 
@@ -210,7 +210,7 @@ export default function Experience() {
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Professional{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             Experience
           </span>
         </h2>
@@ -224,10 +224,10 @@ export default function Experience() {
       {/* Timeline */}
       <div className="relative max-w-5xl mx-auto">
         {/* Vertical Line */}
-        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 -translate-x-1/2" />
+        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-linear-to-b from-blue-500 via-purple-500 to-pink-500 -translate-x-1/2" />
 
         {/* Experience Cards */}
-        <div className="space-y-12">
+        <div className="space-y-8">
           {experiences.map((experience, index) => (
             <div key={experience.id} className="relative">
               {/* Timeline Dot */}
@@ -238,7 +238,7 @@ export default function Experience() {
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className="hidden md:block absolute left-1/2 top-8 -translate-x-1/2 z-10"
               >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 border-4 border-background shadow-lg" />
+                <div className="w-6 h-6 rounded-full bg-linear-to-r from-blue-500 to-purple-600 border-4 border-background shadow-lg" />
                 <motion.div
                   animate={{
                     scale: [1, 1.5, 1],
@@ -249,7 +249,7 @@ export default function Experience() {
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 blur-md"
+                  className="absolute inset-0 rounded-full bg-linear-to-r from-blue-500 to-purple-600 blur-md"
                 />
               </motion.div>
 

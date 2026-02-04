@@ -64,7 +64,7 @@ export default function Page() {
         <div className="absolute bottom-20 left-1/4 w-72 h-72 bg-pink-500/20 dark:bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
         
         {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_at_center,transparent_20%,black)]" />
       </div>
 
       {/* Navigation */}
@@ -78,42 +78,42 @@ export default function Page() {
         </SectionWrapper>
 
         {/* Stats Section */}
-        <SectionWrapper id="stats" className="py-20 md:py-32">
+        <SectionWrapper id="stats" className="py-12 md:py-16">
           <StatsSection />
         </SectionWrapper>
 
         {/* Projects Section */}
-        <SectionWrapper id="projects" className="py-20 md:py-32">
+        <SectionWrapper id="projects" className="py-12 md:py-16">
           <Projects />
         </SectionWrapper>
 
         {/* Skills Section */}
-        <SectionWrapper id="skills" className="py-20 md:py-32">
+        <SectionWrapper id="skills" className="py-12 md:py-16">
           <Skills />
         </SectionWrapper>
 
         {/* Experience Section */}
-        <SectionWrapper id="experience" className="py-20 md:py-32">
+        <SectionWrapper id="experience" className="py-12 md:py-16">
           <Experience />
         </SectionWrapper>
 
         {/* Education Section */}
-        <SectionWrapper id="education" className="py-20 md:py-32">
+        <SectionWrapper id="education" className="py-12 md:py-16">
           <Education />
         </SectionWrapper>
 
         {/* About Section */}
-        <SectionWrapper id="about" className="py-20 md:py-32">
+        <SectionWrapper id="about" className="py-12 md:py-16">
           <About />
         </SectionWrapper>
 
         {/* Testimonials Section */}
-        <SectionWrapper id="testimonials" className="py-20 md:py-32">
+        <SectionWrapper id="testimonials" className="py-12 md:py-16">
           <TestimonialsSection />
         </SectionWrapper>
 
         {/* Contact Section */}
-        <SectionWrapper id="contact" className="py-20 md:py-32">
+        <SectionWrapper id="contact" className="py-12 md:py-16">
           <ContactForm />
         </SectionWrapper>
       </main>
@@ -133,7 +133,7 @@ export default function Page() {
             <Button
               size="icon"
               onClick={scrollToTop}
-              className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all group"
+              className="h-14 w-14 rounded-full bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all group"
             >
               <ArrowUp 
                 size={20} 
