@@ -159,10 +159,10 @@ export default function EnhancedProfile() {
                 onClick={() => setActiveLayer("work")}
                 className="md:col-span-4 glass-panel hover-card p-8 flex flex-col justify-between cursor-pointer border-brand-indigo/20 relative overflow-hidden group"
               >
-                <div className="absolute -right-6 -top-6 text-brand-indigo/10 transform rotate-12 group-hover:scale-110 transition-transform duration-700">
+                <div className="absolute -right-6 -top-6 text-brand-white/10 transform rotate-12 group-hover:scale-110 transition-transform duration-700">
                   <Server size={140} />
                 </div>
-                <Rocket className="text-brand-indigo mb-8 relative z-10" size={32} />
+                <Rocket className="text-brand-white mb-8 relative z-10" size={32} />
                 <div className="relative z-10">
                   <h3 className="text-3xl font-bold text-white mb-1">Projects & Exp</h3>
                   <p className="text-zinc-500 font-medium">
@@ -176,15 +176,15 @@ export default function EnhancedProfile() {
                 onClick={() => setActiveLayer("skills")}
                 className="md:col-span-4 glass-panel hover-card p-8 flex flex-col justify-between cursor-pointer border-brand-purple/20 relative overflow-hidden group"
               >
-                <div className="absolute -right-6 -bottom-6 text-brand-purple/10 transform -rotate-12 group-hover:scale-110 transition-transform duration-700">
+                <div className="absolute -right-6 -bottom-6 text-brand-white/10 transform -rotate-12 group-hover:scale-110 transition-transform duration-700">
                   <Code2 size={140} />
                 </div>
-                <Cpu className="text-brand-purple mb-8 relative z-10" size={32} />
+                <Cpu className="text-brand-white mb-8 relative z-10" size={32} />
                 <div className="flex flex-wrap gap-2 relative z-10">
-                  <Badge className="flex items-center gap-1.5 bg-brand-purple/20 text-brand-purple border-none px-3 py-1">
+                  <Badge className="flex items-center gap-1.5 bg-brand-white/20 text-brand-white border-none px-3 py-1">
                     Go
                   </Badge>
-                  <Badge className="flex items-center gap-1.5 bg-brand-indigo/20 text-brand-indigo border-none px-3 py-1">
+                  <Badge className="flex items-center gap-1.5 bg-brand-white/20 text-brand-white border-none px-3 py-1">
                     React
                   </Badge>
                   <Badge className="flex items-center gap-1.5 bg-brand-emerald/20 text-brand-emerald border-none px-3 py-1">
@@ -208,9 +208,8 @@ export default function EnhancedProfile() {
             >
               <motion.div 
                 layoutId={`module-${activeLayer}`}
-                className="w-full max-w-5xl h-[90vh] md:h-[85vh] glass-panel rounded-2xl relative overflow-hidden flex flex-col border border-white/10 shadow-2xl"
+                className={`w-full ${(activeLayer === 'work' || activeLayer === 'skills') ? 'max-w-[95vw]' : 'max-w-5xl'} h-[90vh] md:h-[85vh] glass-panel rounded-2xl relative overflow-hidden flex flex-col border border-white/10 shadow-2xl`}
               >
-                <div className="absolute top-0 w-full h-1 bg-linear-to-r from-brand-emerald via-brand-indigo to-brand-purple" />
                 
                 <Button 
                   onClick={() => setActiveLayer(null)}
@@ -220,9 +219,11 @@ export default function EnhancedProfile() {
                   <X size={20} />
                 </Button>
 
-                <ScrollArea className="flex-1 h-full">
-                   <div className="p-6 md:p-12 max-w-4xl mx-auto py-12 md:py-16">
-                      <h2 className="text-5xl md:text-7xl font-black mb-12 capitalize bg-clip-text text-transparent bg-linear-to-r from-white to-white/50">{activeLayer}</h2>
+                <ScrollArea className={`flex-1 h-full ${(activeLayer === 'skills' || activeLayer === 'work') ? 'overflow-hidden' : ''}`}>
+                   <div className={`mx-auto ${(activeLayer === 'skills' || activeLayer === 'work') ? 'p-4 md:p-8 pt-6 pb-4 max-w-[90vw]' : 'p-6 md:p-12 max-w-4xl py-12 md:py-16'}`}>
+                      <h2 className={`${(activeLayer === 'skills' || activeLayer === 'work') ? 'text-2xl md:text-3xl mb-4' : 'text-5xl md:text-7xl mb-12'} font-black capitalize bg-clip-text text-transparent bg-linear-to-r from-white to-white/50`}>
+                         {activeLayer}
+                      </h2>
                       {renderLayerContent()}
                    </div>
                 </ScrollArea>

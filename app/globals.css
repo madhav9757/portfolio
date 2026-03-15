@@ -46,6 +46,8 @@
   --color-brand-indigo: #6366f1;
   --color-brand-purple: #a855f7;
   --color-brand-emerald: #10b981;
+  --color-brand-cyan: #06b6d4;
+  --color-brand-amber: #f59e0b;
 }
 
 :root {
@@ -139,11 +141,11 @@
 
   /* Frosted Glass Panels */
   .glass-panel {
-    background: rgba(255, 255, 255, 0.03); /* Transparent to let background peek through */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.08); /* Increased intensity for better visibility */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Stronger border for better definition */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     border-radius: var(--radius-xl);
   }
 
