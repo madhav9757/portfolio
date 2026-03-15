@@ -61,7 +61,7 @@ export const metadata: Metadata = {
 const SkipToContent = () => (
   <a
     href="#main-content"
-    className="sr-only focus:not-sr-only fixed left-4 top-4 z-[9999] p-4 rounded-xl bg-primary text-primary-foreground font-semibold shadow-xl transition-all focus:ring-4 ring-primary/50"
+    className="sr-only focus:not-sr-only fixed left-4 top-4 z-9999 p-4 rounded-xl bg-primary text-primary-foreground font-semibold shadow-xl transition-all focus:ring-4 ring-primary/50"
   >
     Skip to main content
   </a>
@@ -88,11 +88,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SkipToContent />
           
           {/* Noise Texture Overlay */}
-          <div className="fixed inset-0 z-[9999] pointer-events-none opacity-[0.015] mix-blend-overlay noise" />
+          <div className="fixed inset-0 z-9999 pointer-events-none opacity-[0.015] mix-blend-overlay noise" />
 
           {/* Main Content */}
           <div className="relative min-h-screen flex flex-col">
-            <main id="main-content" className="flex-grow">
+            <main id="main-content" className="grow">
               {children}
             </main>
           </div>

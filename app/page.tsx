@@ -1,360 +1,235 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  MapPin,
-  Globe,
-  Mail,
-  Github,
-  Twitter,
-  ArrowRight,
-  Briefcase,
-  Code2,
-  Zap,
-  Layers,
-  X,
-  Activity,
-  User,
-  ExternalLink,
-  Sparkles
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { 
+  User, Rocket, Cpu, Activity, Mail, PhoneCall, 
+  Github, Linkedin, ExternalLink, X, ArrowRight, 
+  Sparkles, Code2, MapPin, Terminal, Briefcase, GraduationCap, Server
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
-// Mock Data
-const PROFILE_DATA = {
-  name: "Madhav",
-  title: "Creative Technologist & Engineer",
-  status: "Building next-gen interfaces",
-  location: "New Delhi, IN",
-  about:
-    "I explore the intersection of design and engineering. Focusing on crafting fluid, intuitive, and unconventional digital experiences that challenge the status quo.",
-  skills: ["React", "Next.js", "Framer Motion", "Go", "WebGL", "Gen AI", "UX Engineering"],
-  experiences: [
-    { role: "Senior Frontend Engineer", company: "TechCorp", year: "2024 - Present" },
-    { role: "UI/UX Designer", company: "StudioX", year: "2022 - 2024" },
-  ],
-  projects: [
-    { name: "AuthSphere", type: "Security", desc: "Next-gen authentication flow." },
-    { name: "Syncra", type: "Real-time", desc: "Encrypted P2P messaging." },
-  ],
+import { resumeData } from "@/lib/data";
+import PixelBlast from "@/components/PixelBlast";
+
+// SECTION COMPONENTS
+import IdentitySection from "@/components/sections/identity";
+import WorkSection from "@/components/sections/work";
+import SkillsSection from "@/components/sections/skills";
+import NowSection from "@/components/sections/now";
+
+// --- CUSTOM HOOK FOR 3D TILT EFFECT ---
+const useTilt = () => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
+
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseXPos = e.clientX - rect.left;
+    const mouseYPos = e.clientY - rect.top;
+    x.set(mouseXPos / width - 0.5);
+    y.set(mouseYPos / height - 0.5);
+  };
+
+  const onMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return { rotateX, rotateY, onMouseMove, onMouseLeave };
 };
 
-const SECTIONS = [
-  { id: "identity", title: "Identity", icon: <User className="w-4 h-4" /> },
-  { id: "work", title: "Artifacts", icon: <Layers className="w-4 h-4" /> },
-  { id: "skills", title: "Capability", icon: <Code2 className="w-4 h-4" /> },
-  { id: "now", title: "Status", icon: <Activity className="w-4 h-4" /> },
-];
-
-export default function ProfilePage() {
+export default function EnhancedProfile() {
   const [activeLayer, setActiveLayer] = useState<string | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt();
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  const renderLayerContent = () => {
+    switch (activeLayer) {
+      case "identity":
+        return <IdentitySection />;
+      case "work":
+        return <WorkSection />;
+      case "skills":
+        return <SkillsSection />;
+      case "now":
+        return <NowSection />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-zinc-200 font-sans overflow-hidden selection:bg-white/20">
-      {/* Subtle Background Glow tied to mouse position */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-500"
-        style={{
-          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,0.03), transparent 40%)`,
-        }}
-      />
+    <div className="relative min-h-screen w-full bg-zinc-950 overflow-hidden noise-overlay">
+      
+      {/* 1. ATMOSPHERIC BACKGROUND */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+          <PixelBlast
+          variant="square"
+          pixelSize={5}
+          color="#a855f7"
+          patternScale={8}
+          patternDensity={1}
+          pixelSizeJitter={0}
+          enableRipples
+          rippleSpeed={0.4}
+          rippleThickness={0.12}
+          rippleIntensityScale={1.5}
+          liquid={false}
+          liquidStrength={0.12}
+          liquidRadius={1.2}
+          liquidWobbleSpeed={5}
+          speed={0.5}
+          edgeFade={0.25}
+          transparent={true} className={undefined} style={undefined}          />
+      </div>
 
-      {/* Noise overlay */}
-      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.015] mix-blend-screen" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
-
-      <main className="relative z-10 w-full h-screen flex flex-col items-center justify-center p-4 md:p-8">
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-screen p-6">
         
-        {/* Navigation / Filter */}
+        {/* 2. FLOATING NAVIGATION */}
         <motion.nav 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute top-8 md:top-12 flex space-x-2 md:space-x-6 z-40 bg-white/5 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 shadow-2xl"
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="fixed top-8 z-50 flex gap-2 p-2 glass-panel rounded-full"
         >
-          {SECTIONS.map((sec) => (
+          {["identity", "work", "skills", "now"].map((id) => (
             <button
-              key={sec.id}
-              onClick={() => setActiveLayer(sec.id)}
-              className="group flex items-center space-x-2 text-xs md:text-sm font-medium tracking-wide text-zinc-400 hover:text-white transition-colors px-3 py-1 rounded-full relative"
+              key={id}
+              onClick={() => setActiveLayer(id)}
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2
+                ${activeLayer === id ? 'bg-white/10 text-white shadow-xl' : 'text-zinc-400 hover:text-white'}`}
             >
-              <span className="opacity-50 group-hover:opacity-100 transition-opacity">{sec.icon}</span>
-              <span>{sec.title}</span>
-              {activeLayer === sec.id && (
-                <motion.div
-                  layoutId="nav-indicator"
-                  className="absolute inset-0 bg-white/10 rounded-full"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
+              {id === 'identity' && <User size={14} />}
+              {id === 'work' && <Rocket size={14} />}
+              {id === 'skills' && <Cpu size={14} />}
+              {id === 'now' && <Activity size={14} />}
+              <span className="capitalize">{id}</span>
             </button>
           ))}
         </motion.nav>
 
-        {/* Dynamic Canvas Area */}
-        <div className="relative w-full max-w-6xl h-[70vh] flex items-center justify-center">
-          
-          <AnimatePresence mode="popLayout">
-            {!activeLayer && (
+        {/* 3. THE INTERACTIVE GRID */}
+        <AnimatePresence mode="wait">
+          {!activeLayer && (
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full max-w-6xl perspective-1000"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1, filter: "blur(20px)" }}
+            >
+              {/* MAIN HERO CARD */}
               <motion.div
-                key="default-view"
-                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full h-full"
+                onMouseMove={onMouseMove}
+                onMouseLeave={onMouseLeave}
+                style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+                onClick={() => setActiveLayer("identity")}
+                className="md:col-span-8 md:row-span-2 glass-panel hover-card group p-12 flex flex-col justify-end cursor-pointer relative overflow-hidden"
               >
-                {/* Identity Module */}
-                <motion.div 
-                  layoutId="module-identity"
-                  onClick={() => setActiveLayer("identity")}
-                  className="md:col-span-7 md:row-span-2 group cursor-pointer relative overflow-hidden bg-linear-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-2xl border border-white/5 hover:border-white/10 rounded-3xl p-8 md:p-12 transition-all duration-500 shadow-2xl flex flex-col justify-end"
-                >
-                  <div className="absolute top-8 right-8 flex items-center space-x-2 bg-green-500/10 text-green-400 px-3 py-1.5 rounded-full text-xs font-medium border border-green-500/20">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                    <span>Focus Mode</span>
-                  </div>
-                  
-                  <div className="space-y-4 relative z-10">
-                    <motion.h1 
-                      layoutId="title-name"
-                      className="text-5xl md:text-8xl font-light tracking-tighter text-white"
-                    >
-                      {PROFILE_DATA.name}
-                    </motion.h1>
-                    <motion.p layoutId="title-role" className="text-xl md:text-2xl text-zinc-400 font-light flex items-center space-x-3">
-                      <span>{PROFILE_DATA.title}</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
-                      <span className="flex items-center text-zinc-500 text-lg"><MapPin className="w-4 h-4 mr-1" /> {PROFILE_DATA.location}</span>
-                    </motion.p>
-                  </div>
-                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-50 group-hover:opacity-0 transition-opacity duration-500" />
-                </motion.div>
-
-                {/* Work / Artifacts Module */}
-                <motion.div
-                  layoutId="module-work"
-                  onClick={() => setActiveLayer("work")}
-                  className="md:col-span-5 md:row-span-1 cursor-pointer group bg-zinc-900/50 backdrop-blur-xl border border-white/5 hover:border-white/10 rounded-3xl p-8 flex flex-col justify-between transition-all duration-500 relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
-                  <div className="flex justify-between items-start text-zinc-500 group-hover:text-zinc-300 transition-colors relative z-10">
-                    <Layers className="w-5 h-5" />
-                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                  </div>
-                  <div className="relative z-10">
-                    <h3 className="text-3xl font-light text-zinc-200">2 Active <br/> Projects</h3>
-                    <p className="text-sm text-zinc-500 mt-2">Latest: Syncra & AuthSphere</p>
-                  </div>
-                </motion.div>
-
-                {/* Status / Now Module */}
-                <motion.div
-                  layoutId="module-now"
-                  onClick={() => setActiveLayer("now")}
-                  className="md:col-span-2 md:row-span-1 cursor-pointer group bg-zinc-900/50 backdrop-blur-xl border border-white/5 hover:border-white/10 rounded-3xl p-6 flex flex-col justify-between transition-all duration-500"
-                >
-                  <div className="flex justify-between items-start text-zinc-500 group-hover:text-zinc-300 transition-colors">
-                    <Activity className="w-5 h-5" />
-                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-sm text-zinc-300 leading-tight">Crafting UI</p>
-                  </div>
-                </motion.div>
-
-                {/* Skills / Stack Module */}
-                <motion.div
-                  layoutId="module-skills"
-                  onClick={() => setActiveLayer("skills")}
-                  className="md:col-span-3 md:row-span-1 cursor-pointer group bg-zinc-900/50 backdrop-blur-xl border border-white/5 hover:border-white/10 rounded-3xl p-6 overflow-hidden relative transition-all duration-500"
-                >
-                  <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-size-[16px_16px]" />
-                  <div className="relative z-10 h-full flex flex-col justify-between">
-                    <div className="flex justify-between items-start text-zinc-500 group-hover:text-zinc-300 transition-colors">
-                      <Zap className="w-5 h-5" />
-                      <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {PROFILE_DATA.skills.slice(0, 3).map(skill => (
-                        <span key={skill} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-zinc-300">
-                          {skill}
-                        </span>
-                      ))}
-                      <span className="px-3 py-1 text-xs text-zinc-500 items-center flex">+{PROFILE_DATA.skills.length - 3} more</span>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Expanded Detail Views */}
-          <AnimatePresence>
-            {activeLayer && (
-              <motion.div
-                key="expanded-view"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.3 } }}
-                className="absolute inset-0 z-20 flex items-center justify-center p-4"
-              >
-                {/* Overlay backdrop */}
-                <motion.div 
-                  className="absolute inset-0 bg-black/40 backdrop-blur-md rounded-3xl"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setActiveLayer(null)}
-                />
+                <div className="absolute top-10 left-10 flex items-center gap-2 text-brand-emerald z-10">
+                  <Terminal size={20} />
+                  <span className="text-xs font-mono tracking-widest uppercase">System.Ready</span>
+                </div>
                 
-                {/* Content Panel */}
-                <motion.div
-                  layoutId={`module-${activeLayer}`}
-                  className="relative w-full h-[80vh] md:h-full bg-zinc-900/90 backdrop-blur-3xl border border-white/10 shadow-2xl rounded-3xl p-8 md:p-16 overflow-y-auto overflow-hidden flex flex-col"
-                >
-                  <button 
-                    onClick={() => setActiveLayer(null)}
-                    className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors z-50 text-zinc-400 hover:text-white"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-
-                  <div className="max-w-3xl mx-auto w-full h-full pt-12">
-                    {activeLayer === "identity" && (
-                      <div className="space-y-12 h-full flex flex-col justify-center">
-                        <div>
-                          <motion.h2 layoutId="title-name" className="text-6xl md:text-8xl font-light tracking-tighter text-white mb-4">
-                            {PROFILE_DATA.name}
-                          </motion.h2>
-                          <motion.p layoutId="title-role" className="text-2xl md:text-3xl text-zinc-400 font-light max-w-2xl leading-relaxed">
-                            {PROFILE_DATA.about}
-                          </motion.p>
-                        </div>
-                        <div className="flex space-x-6 text-zinc-500">
-                          <a href="https://github.com/madhav9757" className="flex items-center space-x-2 hover:text-white transition-colors group">
-                            <Github className="w-5 h-5" /> <span>GitHub</span>
-                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </a>
-                          <a href="https://twitter.com/madhav9757" className="flex items-center space-x-2 hover:text-white transition-colors group">
-                            <Twitter className="w-5 h-5" /> <span>Twitter</span>
-                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </a>
-                          <a href="mailto:contact@example.com" className="flex items-center space-x-2 hover:text-white transition-colors group">
-                            <Mail className="w-5 h-5" /> <span>Email</span>
-                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </a>
-                        </div>
-                      </div>
-                    )}
-
-                    {activeLayer === "skills" && (
-                      <div className="space-y-12">
-                        <div className="flex items-center space-x-4 text-zinc-400 mb-8">
-                          <Code2 className="w-8 h-8" />
-                          <h2 className="text-4xl font-light text-white tracking-tight">Capability Graph</h2>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                          {PROFILE_DATA.skills.map((skill, i) => (
-                            <motion.div 
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: i * 0.05 }}
-                              key={skill} 
-                              className="p-6 bg-white/5 border border-white/5 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-colors"
-                            >
-                              <span className="text-lg text-zinc-300">{skill}</span>
-                              <div className="w-2 h-2 rounded-full bg-zinc-700 group-hover:bg-zinc-400 transition-colors" />
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {activeLayer === "now" && (
-                      <div className="space-y-12">
-                        <div className="flex items-center space-x-4 text-zinc-400 mb-8">
-                          <Activity className="w-8 h-8" />
-                          <h2 className="text-4xl font-light text-white tracking-tight">Chronicle</h2>
-                        </div>
-                        <div className="relative border-l border-zinc-800 ml-4 space-y-12 pb-12">
-                          {PROFILE_DATA.experiences.map((exp, i) => (
-                            <motion.div 
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: i * 0.1 }}
-                              key={i} 
-                              className="relative pl-8"
-                            >
-                              <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-zinc-400 ring-4 ring-zinc-900" />
-                              <div className="space-y-2">
-                                <span className="text-xs font-mono text-zinc-500">{exp.year}</span>
-                                <h3 className="text-2xl font-light text-white">{exp.role}</h3>
-                                <p className="text-lg text-zinc-400">{exp.company}</p>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {activeLayer === "work" && (
-                      <div className="space-y-12 h-full">
-                        <div className="flex items-center space-x-4 text-zinc-400 mb-8">
-                          <Layers className="w-8 h-8" />
-                          <h2 className="text-4xl font-light text-white tracking-tight">Selected Artifacts</h2>
-                        </div>
-                        <div className="grid gap-6">
-                          {PROFILE_DATA.projects.map((proj, i) => (
-                            <motion.div 
-                              initial={{ opacity: 0, scale: 0.98 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: i * 0.1 }}
-                              key={i} 
-                              className="p-8 bg-white/5 hover:bg-white/10 border border-white/5 rounded-3xl transition-colors group cursor-pointer flex flex-col md:flex-row md:items-center justify-between"
-                            >
-                              <div className="space-y-2">
-                                <div className="flex items-center space-x-3 text-sm text-zinc-500 mb-2">
-                                  <Sparkles className="w-4 h-4" />
-                                  <span>{proj.type}</span>
-                                </div>
-                                <h3 className="text-3xl font-light text-white">{proj.name}</h3>
-                                <p className="text-zinc-400 max-w-md">{proj.desc}</p>
-                              </div>
-                              <div className="mt-6 md:mt-0 w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white text-zinc-500 group-hover:text-black transition-all">
-                                <ArrowRight className="w-5 h-5 -rotate-45" />
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                <h1 className="text-7xl md:text-9xl font-black text-gradient leading-none tracking-tighter z-10 relative">
+                  {resumeData.personalInfo.name.split(" ")[0]}
+                </h1>
+                <p className="text-xl text-zinc-400 mt-4 max-w-md font-medium z-10 relative">
+                  {resumeData.personalInfo.title} with a focus on <span className="text-brand-purple">Go</span> microservices and <span className="text-brand-indigo">GenAI</span>.
+                </p>
+                
+                <div className="absolute bottom-10 right-10 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <div className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors">
+                    <ArrowRight className="text-white" />
                   </div>
-                </motion.div>
+                </div>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
 
-        {/* Footer info minimal */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 text-zinc-600 text-xs font-mono flex items-center space-x-4"
-        >
-          <span>INTERACTION_MODEL_V2</span>
-          <span className="w-1 h-1 bg-zinc-700 rounded-full" />
-          <span>PORTFOLIO_OS</span>
-        </motion.div>
+              {/* PROJECT PREVIEW CARD */}
+              <motion.div 
+                onClick={() => setActiveLayer("work")}
+                className="md:col-span-4 glass-panel hover-card p-8 flex flex-col justify-between cursor-pointer border-brand-indigo/20 relative overflow-hidden group"
+              >
+                <div className="absolute -right-6 -top-6 text-brand-indigo/10 transform rotate-12 group-hover:scale-110 transition-transform duration-700">
+                  <Server size={140} />
+                </div>
+                <Rocket className="text-brand-indigo mb-8 relative z-10" size={32} />
+                <div className="relative z-10">
+                  <h3 className="text-3xl font-bold text-white mb-1">Projects & Exp</h3>
+                  <p className="text-zinc-500 font-medium">
+                    {resumeData.projects.slice(0, 2).map(p => p.title).join(", ")} & {resumeData.projects.length - 2} more.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* STACK PREVIEW CARD */}
+              <motion.div 
+                onClick={() => setActiveLayer("skills")}
+                className="md:col-span-4 glass-panel hover-card p-8 flex flex-col justify-between cursor-pointer border-brand-purple/20 relative overflow-hidden group"
+              >
+                <div className="absolute -right-6 -bottom-6 text-brand-purple/10 transform -rotate-12 group-hover:scale-110 transition-transform duration-700">
+                  <Code2 size={140} />
+                </div>
+                <Cpu className="text-brand-purple mb-8 relative z-10" size={32} />
+                <div className="flex flex-wrap gap-2 relative z-10">
+                  <Badge className="flex items-center gap-1.5 bg-brand-purple/20 text-brand-purple border-none px-3 py-1">
+                    Go
+                  </Badge>
+                  <Badge className="flex items-center gap-1.5 bg-brand-indigo/20 text-brand-indigo border-none px-3 py-1">
+                    React
+                  </Badge>
+                  <Badge className="flex items-center gap-1.5 bg-brand-emerald/20 text-brand-emerald border-none px-3 py-1">
+                    Node.js
+                  </Badge>
+                  <Badge className="flex items-center gap-1.5 bg-white/10 text-white border-none px-3 py-1">
+                    +{Object.values(resumeData.competencies).flat().length - 3}
+                  </Badge>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 4. MODAL LAYER */}
+        <AnimatePresence>
+          {activeLayer && (
+            <motion.div 
+              className="fixed inset-0 z-60 flex items-center justify-center p-4 md:p-6 bg-black/60"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            >
+              <motion.div 
+                layoutId={`module-${activeLayer}`}
+                className="w-full max-w-5xl h-[90vh] md:h-[85vh] glass-panel rounded-2xl relative overflow-hidden flex flex-col border border-white/10 shadow-2xl"
+              >
+                <div className="absolute top-0 w-full h-1 bg-linear-to-r from-brand-emerald via-brand-indigo to-brand-purple" />
+                
+                <Button 
+                  onClick={() => setActiveLayer(null)}
+                  className="absolute top-4 md:top-6 right-4 md:right-6 z-50 rounded-full bg-white/10 hover:bg-white/20 text-white shadow-lg"
+                  variant="ghost" size="icon"
+                >
+                  <X size={20} />
+                </Button>
+
+                <ScrollArea className="flex-1 h-full">
+                   <div className="p-6 md:p-12 max-w-4xl mx-auto py-12 md:py-16">
+                      <h2 className="text-5xl md:text-7xl font-black mb-12 capitalize bg-clip-text text-transparent bg-linear-to-r from-white to-white/50">{activeLayer}</h2>
+                      {renderLayerContent()}
+                   </div>
+                </ScrollArea>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );
