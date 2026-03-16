@@ -82,6 +82,7 @@ export default function EnhancedProfile() {
   const [activeLayer, setActiveLayer] = useState<string | null>(null);
   const { theme } = useTheme();
   const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt();
+  const [isProjectSelected, setIsProjectSelected] = useState(false);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -93,7 +94,7 @@ export default function EnhancedProfile() {
       case "identity":
         return <IdentitySection />;
       case "work":
-        return <WorkSection />;
+        return <WorkSection onProjectChange={setIsProjectSelected} />;
       case "skills":
         return <SkillsSection />;
       default:
@@ -134,7 +135,10 @@ export default function EnhancedProfile() {
         {/* 2. FLOATING NAVIGATION */}
         <motion.nav
           initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          animate={{
+            y: isProjectSelected ? -100 : 0,
+            opacity: isProjectSelected ? 0 : 1,
+          }}
           className="fixed top-8 z-50 flex gap-2 p-2 glass-panel rounded-full"
         >
           {["identity", "work", "skills"].map((id) => (
@@ -152,10 +156,15 @@ export default function EnhancedProfile() {
           ))}
         </motion.nav>
 
-        {/* 3. THEME TOGGLE */}
-        <div className="fixed top-8 right-8 z-50">
+        <motion.div
+          animate={{
+            opacity: isProjectSelected ? 0 : 1,
+            pointerEvents: isProjectSelected ? "none" : "auto",
+          }}
+          className="fixed top-8 right-8 z-50"
+        >
           <ModeToggle />
-        </div>
+        </motion.div>
 
         {/* 4. THE INTERACTIVE GRID */}
         <AnimatePresence mode="wait">
@@ -248,32 +257,28 @@ export default function EnhancedProfile() {
         <AnimatePresence>
           {activeLayer && (
             <motion.div
-              className="fixed inset-0 z-60 flex items-center justify-center p-4 md:p-6 bg-black/60"
+              className={`fixed inset-0 z-60 flex items-center justify-center p-4 md:p-6 transition-colors duration-500 ${theme === "light" ? "bg-background/20 backdrop-blur-[2px]" : "bg-black/60 backdrop-blur-sm"}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
               <motion.div
                 layoutId={`module-${activeLayer}`}
-                className={`w-full ${activeLayer === "work" || activeLayer === "skills" ? "max-w-[95vw]" : "max-w-5xl"} h-[90vh] md:h-[85vh] glass-panel rounded-2xl relative overflow-hidden flex flex-col border border-white/10 shadow-2xl`}
+                className={`w-full max-w-[95vw] h-[90vh] md:h-[85vh] rounded-2xl relative overflow-hidden flex flex-col transition-all duration-500 ${isProjectSelected ? "bg-transparent border-transparent shadow-none" : "glass-panel border border-white/10 shadow-2xl"}`}
               >
                 <Button
                   onClick={() => setActiveLayer(null)}
-                  className="absolute top-4 md:top-6 right-4 md:right-6 z-50 rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/10 shadow-lg"
+                  className={`absolute top-4 md:top-6 right-4 md:right-6 z-50 rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/10 shadow-lg transition-opacity duration-300 ${isProjectSelected ? "opacity-0 pointer-events-none" : "opacity-100"}`}
                   variant="ghost"
                   size="icon"
                 >
                   <X size={20} />
                 </Button>
 
-                <ScrollArea
-                  className={`flex-1 h-full ${activeLayer === "skills" || activeLayer === "work" ? "overflow-hidden" : ""}`}
-                >
-                  <div
-                    className={`mx-auto ${activeLayer === "skills" || activeLayer === "work" ? "p-4 md:p-8 pt-6 pb-4 max-w-[90vw]" : "p-6 md:p-12 max-w-4xl py-12 md:py-16"}`}
-                  >
+                <ScrollArea className="flex-1 h-full overflow-hidden">
+                  <div className="mx-auto p-4 md:p-8 pt-6 pb-4 max-w-[90vw]">
                     <h2
-                      className={`${activeLayer === "skills" || activeLayer === "work" ? "text-2xl md:text-3xl mb-4" : "text-5xl md:text-7xl mb-12"} font-black capitalize bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/50`}
+                      className={`${activeLayer === "skills" || activeLayer === "work" ? "text-2xl md:text-3xl mb-4" : "text-5xl md:text-7xl mb-12"} font-black capitalize bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/50 transition-opacity duration-300 ${isProjectSelected ? "opacity-0" : "opacity-100"}`}
                     >
                       {activeLayer}
                     </h2>

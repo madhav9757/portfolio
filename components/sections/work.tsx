@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion, Variants } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Briefcase,
   Rocket,
@@ -14,8 +14,16 @@ import {
   Shield,
   MessageSquare,
   Share2,
+  X,
+  Plus,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { resumeData } from "@/lib/data";
@@ -79,21 +87,41 @@ const projectThemes: Record<
   },
 };
 
-export default function WorkSection() {
+export default function WorkSection({
+  onProjectChange,
+}: {
+  onProjectChange?: (selected: boolean) => void;
+}) {
+  const [selectedProject, setSelectedProject] = useState<
+    (typeof resumeData.projects)[0] | null
+  >(null);
+
+  const handleSelect = (project: (typeof resumeData.projects)[0] | null) => {
+    setSelectedProject(project);
+    if (onProjectChange) onProjectChange(!!project);
+  };
+
   return (
     <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      // Forced boundaries to 90vw and 90vh, overflow hidden to kill page scrolling
-      className="w-[90vw] h-[90vh] mx-auto flex flex-col gap-4 font-sans overflow-hidden"
+      className="w-[90vw] h-[90vh] mx-auto flex flex-col gap-4 font-sans overflow-hidden relative"
     >
       {/* INTEGRATED BENTO GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 min-h-0 overflow-y-auto lg:overflow-visible custom-scrollbar">
-        
+      <motion.div
+        animate={{
+          opacity: selectedProject ? 0 : 1,
+          scale: selectedProject ? 0.98 : 1,
+          filter: selectedProject ? "blur(10px)" : "blur(0px)",
+          pointerEvents: selectedProject ? "none" : "auto",
+        }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 min-h-0 overflow-y-auto lg:overflow-visible custom-scrollbar"
+      >
         {/* EXPERIENCE BLOCK - Integrated into Bento */}
-        <motion.div 
-          variants={itemVariants} 
+        <motion.div
+          variants={itemVariants}
           className="col-span-12 lg:col-span-7 flex flex-col min-h-[220px] bg-transparent border-2 border-foreground/10 rounded-3xl p-6 relative overflow-hidden group/exp hover:border-foreground/30 transition-all duration-500 shadow-sm"
         >
           <div
@@ -112,10 +140,7 @@ export default function WorkSection() {
 
           <div className="space-y-6 relative z-10 pr-2">
             {resumeData.experience.map((exp, idx) => (
-              <div
-                key={idx}
-                className="relative pl-6 group/item"
-              >
+              <div key={idx} className="relative pl-6 group/item">
                 <div className="absolute left-0 top-2 w-2.5 h-2.5 rounded-full bg-background border-[3px] border-foreground/40 group-hover/item:border-foreground transition-all duration-300 z-10" />
                 <div className="absolute left-[4px] top-5 h-full w-[1.5px] bg-foreground/10" />
 
@@ -127,7 +152,10 @@ export default function WorkSection() {
                 </h4>
                 <div className="mt-3 space-y-2">
                   {exp.bullets.map((bullet, i) => (
-                    <p key={i} className="text-[13px] text-foreground/60 font-medium tracking-tight leading-snug">
+                    <p
+                      key={i}
+                      className="text-[13px] text-foreground/60 font-medium tracking-tight leading-snug"
+                    >
                       {bullet}
                     </p>
                   ))}
@@ -146,13 +174,17 @@ export default function WorkSection() {
             icon: Rocket,
             span: "md:col-span-6",
           };
-          
+
           // Custom spans for a better layout
           let gridSpan = theme.span;
-          if (project.title === "Syncra") gridSpan = "col-span-12 lg:col-span-5";
-          if (project.title === "AuthSphere") gridSpan = "col-span-12 lg:col-span-4";
-          if (project.title === "NexChat") gridSpan = "col-span-12 lg:col-span-4";
-          if (project.title === "Discussly") gridSpan = "col-span-12 lg:col-span-4";
+          if (project.title === "Syncra")
+            gridSpan = "col-span-12 lg:col-span-5";
+          if (project.title === "AuthSphere")
+            gridSpan = "col-span-12 lg:col-span-4";
+          if (project.title === "NexChat")
+            gridSpan = "col-span-12 lg:col-span-4";
+          if (project.title === "Discussly")
+            gridSpan = "col-span-12 lg:col-span-4";
           if (project.title === "Generative AI") gridSpan = "col-span-12";
 
           const Icon = theme.icon;
@@ -161,10 +193,12 @@ export default function WorkSection() {
             <motion.div
               key={idx}
               variants={itemVariants}
-              className={`${gridSpan} min-h-[220px]`}
+              layoutId={`card-${project.title}`}
+              className={`${gridSpan} min-h-[220px] cursor-pointer group`}
+              onClick={() => handleSelect(project)}
             >
               <Card
-                className={`h-full bg-transparent border-2 border-foreground/10 hover:border-foreground/30 transition-all duration-500 group relative overflow-hidden flex flex-col rounded-3xl shadow-sm`}
+                className={`h-full bg-transparent border-2 border-foreground/10 group-hover:border-foreground/30 transition-all duration-500 relative overflow-hidden flex flex-col rounded-3xl shadow-sm`}
               >
                 <div
                   className={`absolute top-0 right-0 w-32 h-32 ${theme.glow} blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
@@ -223,7 +257,105 @@ export default function WorkSection() {
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
+
+      {/* PROJECT INTEL MODAL (EXPANDED VIEW) */}
+      <AnimatePresence>
+        {selectedProject && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => handleSelect(null)}
+              className="absolute inset-0 z-40 bg-transparent cursor-zoom-out"
+            />
+
+            {/* Expanded Card */}
+            <motion.div
+              layoutId={`card-${selectedProject.title}`}
+              className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center p-8"
+            >
+              <Card className="w-[75vw] h-fit max-h-[85vh] bg-background border-2 border-foreground/20 rounded-4xl shadow-2xl p-8 pointer-events-auto relative overflow-hidden flex flex-col lg:flex-row gap-8">
+                <div className="absolute top-0 right-0 p-4 z-10">
+                  <button
+                    onClick={() => handleSelect(null)}
+                    className="p-2.5 rounded-full bg-foreground/5 hover:bg-foreground/10 border-2 border-foreground/10 transition-all text-foreground"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="flex-1 flex flex-col min-w-0">
+                  <div className="mb-6">
+                    <motion.h2 className="text-4xl md:text-5xl font-black text-foreground uppercase tracking-tighter mb-2 line-clamp-1">
+                      {selectedProject.title}
+                    </motion.h2>
+                    <p className="text-sm md:text-base font-black text-foreground/40 uppercase tracking-[0.2em] line-clamp-1">
+                      {selectedProject.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="flex-1 flex flex-col gap-4">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 flex items-center gap-2">
+                      <Terminal size={12} /> Technical_Specifications
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {selectedProject.bullets.map((bullet, i) => (
+                        <div key={i} className="flex gap-3 group/bullet">
+                          <div className="mt-1.5 w-1 h-1 rounded-full bg-foreground/20 group-hover/bullet:bg-primary transition-colors shrink-0" />
+                          <p className="text-[13px] text-foreground/70 font-medium leading-tight tracking-tight group-hover/bullet:text-foreground transition-colors">
+                            {bullet}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full lg:w-64 flex flex-col gap-6 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-foreground/10 lg:pl-8">
+                  <div className="space-y-4">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">
+                      Stack
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedProject.tech.map((t, i) => (
+                        <Badge
+                          key={i}
+                          className="bg-foreground/5 border border-foreground/10 text-foreground px-2 py-0.5 text-[10px] font-black rounded uppercase tracking-tighter"
+                        >
+                          {t}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator className="bg-foreground/10" />
+
+                  <div className="space-y-4 mt-auto">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">
+                      Actions
+                    </h4>
+                    <a
+                      href="#"
+                      className="flex items-center justify-between p-3.5 rounded-2xl bg-foreground text-background hover:bg-foreground/90 transition-all group shadow-lg"
+                    >
+                      <span className="font-black uppercase tracking-tighter text-xs">
+                        Launch Project
+                      </span>
+                      <ExternalLink
+                        size={16}
+                        className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                      />
+                    </a>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
