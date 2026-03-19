@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
+import NavigationDock from "@/components/navigation-dock";
+import BackgroundEffect from "@/components/background-effect";
 
 const GeistSans = Geist({
   subsets: ["latin"],
@@ -90,12 +92,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {/* Noise Texture Overlay */}
           <div className="fixed inset-0 z-9999 pointer-events-none opacity-[0.015] mix-blend-overlay noise" />
 
+          {/* Shared Background */}
+          <BackgroundEffect />
+
           {/* Main Content */}
           <div className="relative min-h-screen flex flex-col">
             <main id="main-content" className="grow">
               {children}
             </main>
           </div>
+
+          {/* Shared Navigation Dock */}
+          <NavigationDock />
+
 
           {/* Toast Notifications */}
           <Toaster 

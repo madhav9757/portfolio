@@ -49,6 +49,7 @@ interface CategoryStyle {
   color: string;
   border: string;
   glow: string;
+  bg: string;
   icon: any;
   span: string;
 }
@@ -59,6 +60,7 @@ const categoryTheme: Record<string, CategoryStyle> = {
     color: "text-foreground",
     border: "border-brand-purple/40",
     glow: "bg-brand-purple/10",
+    bg: "bg-linear-to-br from-brand-purple/20 to-transparent",
     icon: Code2,
     span: "md:col-span-4 md:row-span-1",
   },
@@ -66,6 +68,7 @@ const categoryTheme: Record<string, CategoryStyle> = {
     color: "text-foreground",
     border: "border-brand-cyan/40",
     glow: "bg-brand-cyan/10",
+    bg: "bg-linear-to-br from-brand-cyan/20 to-transparent",
     icon: Monitor,
     span: "md:col-span-8 md:row-span-1",
   },
@@ -73,6 +76,7 @@ const categoryTheme: Record<string, CategoryStyle> = {
     color: "text-foreground",
     border: "border-brand-amber/40",
     glow: "bg-brand-amber/10",
+    bg: "bg-linear-to-br from-brand-amber/20 to-transparent",
     icon: Database,
     span: "md:col-span-3 md:row-span-1",
   },
@@ -80,6 +84,7 @@ const categoryTheme: Record<string, CategoryStyle> = {
     color: "text-foreground",
     border: "border-brand-emerald/40",
     glow: "bg-brand-emerald/10",
+    bg: "bg-linear-to-br from-brand-emerald/20 to-transparent",
     icon: Cloud,
     span: "md:col-span-4 md:row-span-1",
   },
@@ -87,6 +92,7 @@ const categoryTheme: Record<string, CategoryStyle> = {
     color: "text-foreground",
     border: "border-brand-indigo/40",
     glow: "bg-brand-indigo/10",
+    bg: "bg-linear-to-br from-brand-indigo/20 to-transparent",
     icon: ShieldCheck,
     span: "md:col-span-5 md:row-span-1",
   },
@@ -104,7 +110,7 @@ export default function SkillsSection() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="h-full flex flex-col gap-4 font-sans overflow-hidden"
+      className="flex flex-col gap-4 font-sans"
     >
       {/* COMPACT HEADER */}
       <motion.div
@@ -125,7 +131,7 @@ export default function SkillsSection() {
 
       {/* NO-SCROLL BENTO GRID */}
       {/* min-h-0 allows the flex child to shrink properly without overflowing */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1 min-h-0">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
         {Object.entries(resumeData.competencies).map(([category, skills]) => {
           const theme = categoryTheme[category] || {
             color: "text-white",
@@ -142,7 +148,7 @@ export default function SkillsSection() {
               variants={itemVariants}
               className={`${theme.span} h-full min-h-0`}
             >
-              <Card className="h-full bg-transparent border-foreground/10 text-foreground hover:border-primary transition-all duration-300 group relative overflow-hidden flex flex-col">
+              <Card className={`h-full ${theme.bg} border-2 ${theme.border} text-foreground group-hover:border-foreground/30 transition-all duration-300 group relative overflow-hidden flex flex-col shadow-none`}>
                 <div
                   className={`absolute top-0 right-0 w-1/2 h-1/2 ${theme.glow} blur-xl opacity-20 group-hover:opacity-50 transition-opacity`}
                 />

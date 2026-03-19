@@ -59,6 +59,8 @@ const socialNodes = [
     icon: Github,
     color: "from-slate-800 to-slate-900",
     glow: "rgba(255, 255, 255, 0.1)",
+    bg: "bg-linear-to-br from-slate-800/20 to-transparent",
+    border: "border-slate-800/40",
     description: "Source code repository and open-source contributions.",
     stats: "24 Repos / 150+ Commits",
     href: "https://github.com/madhav9757",
@@ -71,6 +73,8 @@ const socialNodes = [
     icon: Linkedin,
     color: "from-blue-600 to-blue-800",
     glow: "rgba(37, 99, 235, 0.3)",
+    bg: "bg-linear-to-br from-blue-600/20 to-transparent",
+    border: "border-blue-600/40",
     description: "Professional networking and career history.",
     stats: "500+ Connections",
     href: "https://linkedin.com/in/madhav-semwal-b40272377",
@@ -83,6 +87,8 @@ const socialNodes = [
     icon: Twitter,
     color: "from-slate-900 to-black",
     glow: "rgba(255, 255, 255, 0.1)",
+    bg: "bg-linear-to-br from-slate-900/20 to-transparent",
+    border: "border-slate-900/40",
     description: "Tech thoughts and rapid coding updates.",
     stats: "Beta Uplink",
     href: "#",
@@ -95,6 +101,8 @@ const socialNodes = [
     icon: Mail,
     color: "from-emerald-600 to-emerald-800",
     glow: "rgba(16, 185, 129, 0.3)",
+    bg: "bg-linear-to-br from-emerald-600/20 to-transparent",
+    border: "border-emerald-600/40",
     description: "Encrypted communications channel.",
     stats: "P-GP Key Enabled",
     href: `mailto:${resumeData.personalInfo.email}`,
@@ -115,7 +123,7 @@ const SocialCard = ({ node }: { node: (typeof socialNodes)[0] }) => {
       onMouseLeave={() => setIsHovered(false)}
       className="relative block h-full group"
     >
-      <Card className="h-full bg-transparent border-foreground/10 hover:border-foreground/30 transition-all duration-500 rounded-4xl overflow-hidden flex flex-col relative group shadow-none">
+      <Card className={`h-full ${node.bg} border-2 ${node.border} hover:border-foreground/30 transition-all duration-500 rounded-4xl overflow-hidden flex flex-col relative group shadow-none`}>
         {/* Background Gradient Glow */}
         <div 
           className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
@@ -191,7 +199,7 @@ export default function SocialSection() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="h-full w-full flex flex-col gap-8 font-inter overflow-hidden p-1"
+      className="w-full flex flex-col gap-8 font-inter p-1"
     >
       {/* 1. HUD HEADER */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
@@ -233,7 +241,7 @@ export default function SocialSection() {
       </div>
 
       {/* 2. NODES GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 flex-1 min-h-0 overflow-y-auto lg:overflow-visible custom-scrollbar">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {socialNodes.map((node) => (
           <SocialCard key={node.id} node={node} />
         ))}
@@ -243,9 +251,9 @@ export default function SocialSection() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-auto">
          <motion.div 
            variants={itemVariants}
-           className="lg:col-span-12 flex items-center justify-between bg-foreground/3 border border-white/5 p-8 rounded-[2.5rem] relative overflow-hidden group"
+           className="lg:col-span-12 flex items-center justify-between bg-linear-to-r from-brand-emerald/20 to-transparent border border-brand-emerald/20 p-8 rounded-[2.5rem] relative overflow-hidden group shadow-none"
          >
-            <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/2 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1500" />
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-brand-emerald/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1500" />
             
             <div className="flex items-center gap-6 relative z-10">
                <div className="p-4 rounded-3xl bg-foreground text-background shadow-2xl">

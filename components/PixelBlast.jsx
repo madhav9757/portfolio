@@ -498,12 +498,21 @@ const PixelBlast = ({
       });
       let raf = 0;
       const animate = () => {
+        if (!threeRef.current) return;
         if (autoPauseOffscreen && !visibilityRef.current.visible) {
           raf = requestAnimationFrame(animate);
+          t.raf = raf;
           return;
         }
-        uniforms.uTime.value = timeOffset + clock.getElapsedTime() * speedRef.current;
-        if (liquidEffect) liquidEffect.uniforms.get('uTime').value = uniforms.uTime.value;
+        
+        const delta = clock.getElapsedTime() * speedRef.current;
+        uniforms.uTime.value = timeOffset + delta;
+        
+        if (liquidEffect) {
+          const uTime = liquidEffect.uniforms.get('uTime');
+          if (uTime) uTime.value = uniforms.uTime.value;
+        }
+        
         if (composer) {
           if (touch) touch.update();
           composer.passes.forEach(p => {
@@ -516,7 +525,9 @@ const PixelBlast = ({
           });
           composer.render();
         } else renderer.render(scene, camera);
+        
         raf = requestAnimationFrame(animate);
+        if (threeRef.current) threeRef.current.raf = raf;
       };
       raf = requestAnimationFrame(animate);
       threeRef.current = {
@@ -539,7 +550,10 @@ const PixelBlast = ({
       const t = threeRef.current;
       t.uniforms.uShapeType.value = SHAPE_MAP[variant] ?? 0;
       t.uniforms.uPixelSize.value = pixelSize * t.renderer.getPixelRatio();
-      t.uniforms.uColor.value.set(color);
+      
+      const safeColor = typeof color === 'string' ? color : '#B19EEF';
+      t.uniforms.uColor.value.set(safeColor);
+      
       t.uniforms.uScale.value = patternScale;
       t.uniforms.uDensity.value = patternDensity;
       t.uniforms.uPixelJitter.value = pixelSizeJitter;
@@ -548,10 +562,12 @@ const PixelBlast = ({
       t.uniforms.uRippleThickness.value = rippleThickness;
       t.uniforms.uRippleSpeed.value = rippleSpeed;
       t.uniforms.uEdgeFade.value = edgeFade;
+      
       if (transparent) t.renderer.setClearAlpha(0);
       else t.renderer.setClearColor(0x000000, 1);
+      
       if (t.liquidEffect) {
-        const uStrength = t.liquidEffect;
+        const uStrength = t.liquidEffect.uniforms.get('uStrength');
         if (uStrength) uStrength.value = liquidStrength;
         const uFreq = t.liquidEffect.uniforms.get('uFreq');
         if (uFreq) uFreq.value = liquidWobbleSpeed;
@@ -559,10 +575,11 @@ const PixelBlast = ({
       if (t.touch) t.touch.radiusScale = liquidRadius;
     }
     prevConfigRef.current = cfg;
+    
     return () => {
-      if (threeRef.current && mustReinit) return;
-      if (!threeRef.current) return;
       const t = threeRef.current;
+      if (!t || (t && mustReinit)) return;
+      
       t.resizeObserver?.disconnect();
       cancelAnimationFrame(t.raf);
       t.quad?.geometry.dispose();

@@ -55,12 +55,13 @@ const itemVariants: Variants = {
 // Unique themes for projects
 const projectThemes: Record<
   string,
-  { color: string; border: string; glow: string; icon: any; span: string }
+  { color: string; border: string; glow: string; bg: string; icon: any; span: string }
 > = {
   Syncra: {
     color: "text-foreground",
     border: "border-brand-cyan/40",
     glow: "bg-brand-cyan/10",
+    bg: "bg-linear-to-br from-brand-cyan/20 to-transparent",
     icon: Monitor,
     span: "md:col-span-6 md:row-span-1",
   },
@@ -68,6 +69,7 @@ const projectThemes: Record<
     color: "text-foreground",
     border: "border-brand-indigo/40",
     glow: "bg-brand-indigo/10",
+    bg: "bg-linear-to-br from-brand-indigo/20 to-transparent",
     icon: Shield,
     span: "md:col-span-6 md:row-span-1",
   },
@@ -75,6 +77,7 @@ const projectThemes: Record<
     color: "text-foreground",
     border: "border-brand-emerald/40",
     glow: "bg-brand-emerald/10",
+    bg: "bg-linear-to-br from-brand-emerald/20 to-transparent",
     icon: MessageSquare,
     span: "md:col-span-5 md:row-span-1",
   },
@@ -82,6 +85,7 @@ const projectThemes: Record<
     color: "text-foreground",
     border: "border-brand-amber/40",
     glow: "bg-brand-amber/10",
+    bg: "bg-linear-to-br from-brand-amber/20 to-transparent",
     icon: Share2,
     span: "md:col-span-7 md:row-span-1",
   },
@@ -106,7 +110,7 @@ export default function WorkSection({
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="w-[90vw] h-[90vh] mx-auto flex flex-col gap-4 font-sans overflow-hidden relative"
+      className="w-[90vw] mx-auto flex flex-col gap-4 font-sans relative"
     >
       {/* INTEGRATED BENTO GRID */}
       <motion.div
@@ -117,12 +121,12 @@ export default function WorkSection({
           pointerEvents: selectedProject ? "none" : "auto",
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
-        className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 min-h-0 overflow-y-auto lg:overflow-visible custom-scrollbar"
+        className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:overflow-visible custom-scrollbar"
       >
         {/* EXPERIENCE BLOCK - Integrated into Bento */}
         <motion.div
           variants={itemVariants}
-          className="col-span-12 lg:col-span-7 flex flex-col min-h-[220px] bg-transparent border-2 border-foreground/10 rounded-3xl p-6 relative overflow-hidden group/exp hover:border-foreground/30 transition-all duration-500 shadow-sm"
+          className="col-span-12 lg:col-span-7 flex flex-col min-h-[220px] bg-linear-to-br from-brand-purple/20 via-brand-purple/5 to-transparent border-2 border-brand-purple/20 rounded-3xl p-6 relative overflow-hidden group/exp hover:border-brand-purple/40 transition-all duration-500 shadow-sm"
         >
           <div
             className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-foreground/20 to-transparent animate-scan"
@@ -171,6 +175,7 @@ export default function WorkSection({
             color: "text-foreground",
             border: "border-foreground/10",
             glow: "bg-foreground/5",
+            bg: "bg-transparent",
             icon: Rocket,
             span: "md:col-span-6",
           };
@@ -198,7 +203,7 @@ export default function WorkSection({
               onClick={() => handleSelect(project)}
             >
               <Card
-                className={`h-full bg-transparent border-2 border-foreground/10 group-hover:border-foreground/30 transition-all duration-500 relative overflow-hidden flex flex-col rounded-3xl shadow-sm`}
+                className={`h-full ${theme.bg} border-2 ${theme.border} group-hover:border-foreground/30 transition-all duration-500 relative overflow-hidden flex flex-col rounded-3xl shadow-sm`}
               >
                 <div
                   className={`absolute top-0 right-0 w-32 h-32 ${theme.glow} blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
