@@ -1,366 +1,418 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Briefcase,
   Rocket,
   ExternalLink,
-  ChevronRight,
-  Zap,
+  X,
   Terminal,
-  Activity,
   Monitor,
   Shield,
   MessageSquare,
   Share2,
-  X,
-  Plus,
+  Brain,
+  Music,
+  ChevronRight,
+  CalendarDays,
+  Layers,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { resumeData } from "@/lib/data";
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
+/* ─────────────────────────────────────────────
+   Types
+───────────────────────────────────────────── */
+type Project = (typeof resumeData.projects)[0];
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.9, y: 10 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 120,
-      damping: 20,
-    },
-  },
-};
-
-// Unique themes for projects
-const projectThemes: Record<
+/* ─────────────────────────────────────────────
+   Project metadata
+───────────────────────────────────────────── */
+const projectMeta: Record<
   string,
-  { color: string; border: string; glow: string; bg: string; icon: any; span: string }
+  {
+    icon: React.ElementType;
+    accent: string; // tailwind border/text color class
+    tag: string;
+    span: string; // grid col-span
+  }
 > = {
   Syncra: {
-    color: "text-foreground",
-    border: "border-brand-cyan/40",
-    glow: "bg-brand-cyan/10",
-    bg: "bg-linear-to-br from-brand-cyan/20 to-transparent",
     icon: Monitor,
-    span: "md:col-span-6 md:row-span-1",
+    accent: "cyan",
+    tag: "Real-Time",
+    span: "col-span-12 md:col-span-6",
   },
   AuthSphere: {
-    color: "text-foreground",
-    border: "border-brand-indigo/40",
-    glow: "bg-brand-indigo/10",
-    bg: "bg-linear-to-br from-brand-indigo/20 to-transparent",
     icon: Shield,
-    span: "md:col-span-6 md:row-span-1",
+    accent: "indigo",
+    tag: "Security",
+    span: "col-span-12 md:col-span-6",
   },
   NexChat: {
-    color: "text-foreground",
-    border: "border-brand-emerald/40",
-    glow: "bg-brand-emerald/10",
-    bg: "bg-linear-to-br from-brand-emerald/20 to-transparent",
     icon: MessageSquare,
-    span: "md:col-span-5 md:row-span-1",
+    accent: "emerald",
+    tag: "Messaging",
+    span: "col-span-12 md:col-span-4",
   },
   Discussly: {
-    color: "text-foreground",
-    border: "border-brand-amber/40",
-    glow: "bg-brand-amber/10",
-    bg: "bg-linear-to-br from-brand-amber/20 to-transparent",
     icon: Share2,
-    span: "md:col-span-7 md:row-span-1",
+    accent: "amber",
+    tag: "Community",
+    span: "col-span-12 md:col-span-4",
+  },
+  "AI Workflow Experiments": {
+    icon: Brain,
+    accent: "purple",
+    tag: "GenAI",
+    span: "col-span-12 md:col-span-4",
+  },
+  "Dynamic Music Streaming Platform": {
+    icon: Music,
+    accent: "rose",
+    tag: "Streaming",
+    span: "col-span-12",
   },
 };
 
-export default function WorkSection({
-  onProjectChange,
-}: {
-  onProjectChange?: (selected: boolean) => void;
-}) {
-  const [selectedProject, setSelectedProject] = useState<
-    (typeof resumeData.projects)[0] | null
-  >(null);
+const accentMap: Record<
+  string,
+  { border: string; text: string; bg: string; dot: string }
+> = {
+  cyan: {
+    border: "border-cyan-500/30",
+    text: "text-cyan-400",
+    bg: "bg-cyan-500/10",
+    dot: "bg-cyan-400",
+  },
+  indigo: {
+    border: "border-indigo-500/30",
+    text: "text-indigo-400",
+    bg: "bg-indigo-500/10",
+    dot: "bg-indigo-400",
+  },
+  emerald: {
+    border: "border-emerald-500/30",
+    text: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    dot: "bg-emerald-400",
+  },
+  amber: {
+    border: "border-amber-500/30",
+    text: "text-amber-400",
+    bg: "bg-amber-500/10",
+    dot: "bg-amber-400",
+  },
+  purple: {
+    border: "border-purple-500/30",
+    text: "text-purple-400",
+    bg: "bg-purple-500/10",
+    dot: "bg-purple-400",
+  },
+  rose: {
+    border: "border-rose-500/30",
+    text: "text-rose-400",
+    bg: "bg-rose-500/10",
+    dot: "bg-rose-400",
+  },
+};
 
-  const handleSelect = (project: (typeof resumeData.projects)[0] | null) => {
-    setSelectedProject(project);
-    if (onProjectChange) onProjectChange(!!project);
+/* ─────────────────────────────────────────────
+   Project Card
+───────────────────────────────────────────── */
+function ProjectCard({
+  project,
+  onClick,
+}: {
+  project: Project;
+  onClick: () => void;
+}) {
+  const meta = projectMeta[project.title] ?? {
+    icon: Rocket,
+    accent: "indigo",
+    tag: "Project",
+    span: "col-span-12 md:col-span-6",
   };
+  const Icon = meta.icon;
+  const ac = accentMap[meta.accent];
+
+  return (
+    <motion.button
+      layout
+      onClick={onClick}
+      className={`${meta.span} group text-left h-full min-h-[170px] relative rounded-3xl border border-foreground/10 bg-foreground/5 backdrop-blur-md hover:bg-foreground/10 transition-all duration-500 overflow-hidden p-6 flex flex-col gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 hover:shadow-2xl hover:-translate-y-1`}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      {/* Subtle glow top-right */}
+      <div
+        className={`pointer-events-none absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 ${ac.bg}`}
+      />
+      <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-linear-to-br from-${ac.text.split('-')[1] || 'current'}-500/20 to-transparent pointer-events-none`} />
+
+      {/* Header row */}
+      <div className="flex items-start justify-between gap-2 relative z-10">
+        <div className={`p-2 rounded-xl ${ac.bg} ${ac.text}`}>
+          <Icon size={18} />
+        </div>
+        <div className="flex items-center gap-2 ml-auto">
+          <span
+            className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${ac.bg} ${ac.text}`}
+          >
+            {meta.tag}
+          </span>
+          <ChevronRight
+            size={14}
+            className="opacity-0 group-hover:opacity-60 transition-opacity"
+          />
+        </div>
+      </div>
+
+      {/* Title */}
+      <div className="relative z-10 mt-2">
+        <h3 className="text-lg font-black uppercase tracking-tight text-foreground/90 leading-tight group-hover:text-foreground transition-colors">
+          {project.title}
+        </h3>
+        <p className="text-xs font-medium text-foreground/50 mt-1 line-clamp-1">
+          {project.subtitle}
+        </p>
+      </div>
+
+      {/* First bullet */}
+      <p className="text-[12px] text-foreground/60 font-medium leading-relaxed line-clamp-2 relative z-10 flex-1">
+        {project.bullets[0]}
+      </p>
+
+      {/* Tech tags */}
+      <div className="flex flex-wrap gap-1.5 relative z-10 mt-auto pt-2">
+        {project.tech.slice(0, 4).map((t) => (
+          <span
+            key={t}
+            className="text-[9px] font-bold uppercase tracking-wide px-2 py-1 rounded-sm bg-background/50 text-foreground/60 border border-foreground/10"
+          >
+            {t}
+          </span>
+        ))}
+        {project.tech.length > 4 && (
+          <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-1 rounded-sm bg-background/50 text-foreground/50 border border-transparent">
+            +{project.tech.length - 4}
+          </span>
+        )}
+      </div>
+    </motion.button>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Detail Panel (slide-in drawer)
+───────────────────────────────────────────── */
+function DetailPanel({
+  project,
+  onClose,
+}: {
+  project: Project;
+  onClose: () => void;
+}) {
+  const meta = projectMeta[project.title] ?? {
+    icon: Rocket,
+    accent: "indigo",
+    tag: "Project",
+    span: "",
+  };
+  const Icon = meta.icon;
+  const ac = accentMap[meta.accent];
 
   return (
     <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="w-[90vw] mx-auto flex flex-col gap-4 font-sans relative"
+      key="detail"
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 40 }}
+      transition={{ type: "spring", stiffness: 320, damping: 28 }}
+      className="h-full flex flex-col bg-background border-l border-foreground/10 overflow-hidden"
     >
-      {/* INTEGRATED BENTO GRID */}
-      <motion.div
-        animate={{
-          opacity: selectedProject ? 0 : 1,
-          scale: selectedProject ? 0.98 : 1,
-          filter: selectedProject ? "blur(10px)" : "blur(0px)",
-          pointerEvents: selectedProject ? "none" : "auto",
-        }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
-        className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:overflow-visible custom-scrollbar"
-      >
-        {/* EXPERIENCE BLOCK - Integrated into Bento */}
-        <motion.div
-          variants={itemVariants}
-          className="col-span-12 lg:col-span-7 flex flex-col min-h-[220px] bg-linear-to-br from-brand-purple/20 via-brand-purple/5 to-transparent border-2 border-brand-purple/20 rounded-3xl p-6 relative overflow-hidden group/exp hover:border-brand-purple/40 transition-all duration-500 shadow-sm"
-        >
-          <div
-            className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-foreground/20 to-transparent animate-scan"
-            style={{ animation: "scan 3s linear infinite" }}
-          />
-
-          <div className="flex items-center gap-4 mb-6 relative z-10 shrink-0">
-            <div className="p-2.5 rounded-xl bg-transparent border-2 border-foreground/20">
-              <Briefcase className="text-foreground animate-pulse" size={20} />
-            </div>
-            <h3 className="text-xl font-black uppercase tracking-[0.4em] text-foreground">
-              Experience_Log
-            </h3>
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-6 py-5 border-b border-foreground/10 shrink-0 bg-foreground/5 backdrop-blur-md">
+        <div className="flex items-center gap-4">
+          <div className={`p-2.5 rounded-xl ${ac.bg} ${ac.text} border ${ac.border}`}>
+            <Icon size={20} />
           </div>
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/50">
+              {meta.tag}
+            </p>
+            <h2 className="text-lg font-black uppercase tracking-tight text-foreground leading-none mt-1.5">
+              {project.title}
+            </h2>
+          </div>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-2.5 rounded-xl hover:bg-foreground/10 text-foreground/50 hover:text-foreground transition-all border border-transparent hover:border-foreground/10"
+          aria-label="Close detail panel"
+        >
+          <X size={20} />
+        </button>
+      </div>
 
-          <div className="space-y-6 relative z-10 pr-2">
-            {resumeData.experience.map((exp, idx) => (
-              <div key={idx} className="relative pl-6 group/item">
-                <div className="absolute left-0 top-2 w-2.5 h-2.5 rounded-full bg-background border-[3px] border-foreground/40 group-hover/item:border-foreground transition-all duration-300 z-10" />
-                <div className="absolute left-[4px] top-5 h-full w-[1.5px] bg-foreground/10" />
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6 scrollbar-thin scrollbar-thumb-foreground/10">
+        {/* Subtitle */}
+        <p className="text-sm font-semibold text-foreground/50 leading-relaxed">
+          {project.subtitle}
+        </p>
 
-                <div className="text-[10px] font-mono text-foreground/50 mb-1.5 font-black tracking-widest uppercase">
-                  {exp.period}
-                </div>
-                <h4 className="text-lg font-black text-foreground leading-tight uppercase tracking-tighter">
-                  {exp.role}
-                </h4>
-                <div className="mt-3 space-y-2">
-                  {exp.bullets.map((bullet, i) => (
-                    <p
-                      key={i}
-                      className="text-[13px] text-foreground/60 font-medium tracking-tight leading-snug"
-                    >
-                      {bullet}
-                    </p>
-                  ))}
-                </div>
-              </div>
+        {/* Tech stack */}
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/30 mb-2 flex items-center gap-1.5">
+            <Layers size={10} /> Stack
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {project.tech.map((t) => (
+              <span
+                key={t}
+                className={`text-[10px] font-bold uppercase tracking-tight px-2.5 py-1 rounded-lg ${ac.bg} ${ac.text} border ${ac.border}`}
+              >
+                {t}
+              </span>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        {/* PROJECTS MAPPED INTO BENTO */}
-        {resumeData.projects.map((project, idx) => {
-          const theme = projectThemes[project.title] || {
-            color: "text-foreground",
-            border: "border-foreground/10",
-            glow: "bg-foreground/5",
-            bg: "bg-transparent",
-            icon: Rocket,
-            span: "md:col-span-6",
-          };
+        <Separator className="bg-foreground/8" />
 
-          // Custom spans for a better layout
-          let gridSpan = theme.span;
-          if (project.title === "Syncra")
-            gridSpan = "col-span-12 lg:col-span-5";
-          if (project.title === "AuthSphere")
-            gridSpan = "col-span-12 lg:col-span-4";
-          if (project.title === "NexChat")
-            gridSpan = "col-span-12 lg:col-span-4";
-          if (project.title === "Discussly")
-            gridSpan = "col-span-12 lg:col-span-4";
-          if (project.title === "Generative AI") gridSpan = "col-span-12";
-
-          const Icon = theme.icon;
-
-          return (
-            <motion.div
-              key={idx}
-              variants={itemVariants}
-              layoutId={`card-${project.title}`}
-              className={`${gridSpan} min-h-[220px] cursor-pointer group`}
-              onClick={() => handleSelect(project)}
-            >
-              <Card
-                className={`h-full ${theme.bg} border-2 ${theme.border} group-hover:border-foreground/30 transition-all duration-500 relative overflow-hidden flex flex-col rounded-3xl shadow-sm`}
-              >
+        {/* Bullets */}
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/30 mb-3 flex items-center gap-1.5">
+            <Terminal size={10} /> Technical Details
+          </p>
+          <ul className="space-y-3">
+            {project.bullets.map((bullet, i) => (
+              <li key={i} className="flex gap-3 group/b">
                 <div
-                  className={`absolute top-0 right-0 w-32 h-32 ${theme.glow} blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
+                  className={`mt-1.5 w-1 h-1 rounded-full shrink-0 ${ac.dot} opacity-60 group-hover/b:opacity-100 transition-opacity`}
                 />
-                <div
-                  className={`absolute -bottom-4 -left-4 opacity-5 group-hover:opacity-10 transition-all transform group-hover:scale-150 rotate-12 text-foreground`}
-                >
-                  <Icon size={120} />
-                </div>
+                <p className="text-[12px] text-foreground/60 font-medium leading-relaxed group-hover/b:text-foreground/80 transition-colors">
+                  {bullet}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
-                <CardHeader className="p-6 flex flex-row items-center justify-between relative z-10 space-y-0 shrink-0">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`p-2 rounded-lg bg-transparent border border-foreground/10 group-hover:border-foreground/30 text-foreground transition-all`}
-                    >
-                      <Icon size={16} />
-                    </div>
-                    <CardTitle
-                      className={`text-lg font-black uppercase tracking-tighter text-foreground`}
-                    >
-                      {project.title}
-                    </CardTitle>
-                  </div>
-                  <a
-                    href="#"
-                    className={`p-2 rounded-lg bg-transparent text-foreground/40 border border-foreground/10 hover:text-foreground hover:border-foreground transition-all`}
-                  >
-                    <ExternalLink size={14} />
-                  </a>
-                </CardHeader>
-
-                <CardContent className="p-6 pt-0 flex-1 flex flex-col justify-between relative z-10 overflow-hidden">
-                  <div>
-                    <p
-                      className={`text-[10px] font-black tracking-[0.2em] uppercase mb-2 text-foreground/40`}
-                    >
-                      {project.subtitle}
-                    </p>
-                    <p className="text-[13px] text-foreground/70 font-medium tracking-tight leading-relaxed line-clamp-2">
-                      {project.bullets[0]}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mt-4">
-                    {project.tech.map((t, i) => (
-                      <Badge
-                        key={i}
-                        className={`bg-foreground/5 border border-foreground/10 group-hover:border-foreground/30 text-[10px] font-black text-foreground/70 group-hover:text-foreground px-2 py-0.5 relative overflow-hidden rounded transition-all uppercase tracking-tighter`}
-                      >
-                        <span className="relative z-10">{t}</span>
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          );
-        })}
-      </motion.div>
-
-      {/* PROJECT INTEL MODAL (EXPANDED VIEW) */}
-      <AnimatePresence>
-        {selectedProject && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => handleSelect(null)}
-              className="absolute inset-0 z-40 bg-transparent cursor-zoom-out"
-            />
-
-            {/* Expanded Card */}
-            <motion.div
-              layoutId={`card-${selectedProject.title}`}
-              className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center p-8"
-            >
-              <Card className="w-[75vw] h-fit max-h-[85vh] bg-background border-2 border-foreground/20 rounded-4xl shadow-2xl p-8 pointer-events-auto relative overflow-hidden flex flex-col lg:flex-row gap-8">
-                <div className="absolute top-0 right-0 p-4 z-10">
-                  <button
-                    onClick={() => handleSelect(null)}
-                    className="p-2.5 rounded-full bg-foreground/5 hover:bg-foreground/10 border-2 border-foreground/10 transition-all text-foreground"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-
-                <div className="flex-1 flex flex-col min-w-0">
-                  <div className="mb-6">
-                    <motion.h2 className="text-4xl md:text-5xl font-black text-foreground uppercase tracking-tighter mb-2 line-clamp-1">
-                      {selectedProject.title}
-                    </motion.h2>
-                    <p className="text-sm md:text-base font-black text-foreground/40 uppercase tracking-[0.2em] line-clamp-1">
-                      {selectedProject.subtitle}
-                    </p>
-                  </div>
-
-                  <div className="flex-1 flex flex-col gap-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 flex items-center gap-2">
-                      <Terminal size={12} /> Technical_Specifications
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {selectedProject.bullets.map((bullet, i) => (
-                        <div key={i} className="flex gap-3 group/bullet">
-                          <div className="mt-1.5 w-1 h-1 rounded-full bg-foreground/20 group-hover/bullet:bg-primary transition-colors shrink-0" />
-                          <p className="text-[13px] text-foreground/70 font-medium leading-tight tracking-tight group-hover/bullet:text-foreground transition-colors">
-                            {bullet}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-full lg:w-64 flex flex-col gap-6 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-foreground/10 lg:pl-8">
-                  <div className="space-y-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">
-                      Stack
-                    </h4>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedProject.tech.map((t, i) => (
-                        <Badge
-                          key={i}
-                          className="bg-foreground/5 border border-foreground/10 text-foreground px-2 py-0.5 text-[10px] font-black rounded uppercase tracking-tighter"
-                        >
-                          {t}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <Separator className="bg-foreground/10" />
-
-                  <div className="space-y-4 mt-auto">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">
-                      Actions
-                    </h4>
-                    <a
-                      href="#"
-                      className="flex items-center justify-between p-3.5 rounded-2xl bg-foreground text-background hover:bg-foreground/90 transition-all group shadow-lg"
-                    >
-                      <span className="font-black uppercase tracking-tighter text-xs">
-                        Launch Project
-                      </span>
-                      <ExternalLink
-                        size={16}
-                        className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
-                      />
-                    </a>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* Footer action */}
+      <div className="px-6 py-4 border-t border-foreground/8 shrink-0">
+        <a
+          href="#"
+          className={`flex items-center justify-between w-full px-4 py-3 rounded-xl font-black uppercase tracking-tight text-xs text-foreground bg-foreground/5 hover:bg-foreground hover:text-background border border-foreground/10 hover:border-foreground transition-all duration-300 group`}
+        >
+          <span>View Project</span>
+          <ExternalLink
+            size={14}
+            className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+          />
+        </a>
+      </div>
     </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Main Section
+───────────────────────────────────────────── */
+export default function WorkSection() {
+  const [selected, setSelected] = useState<Project | null>(null);
+
+  return (
+    <div className="w-full flex flex-col gap-6">
+      {/* Split layout when detail is open */}
+      <div
+        className={`grid transition-all duration-500 ease-in-out gap-4 ${
+          selected ? "grid-cols-1 lg:grid-cols-[1fr_360px]" : "grid-cols-1"
+        }`}
+        style={{ minHeight: "70vh" }}
+      >
+        {/* Left: experience + projects */}
+        <div className="flex flex-col gap-4 min-w-0">
+          {/* Experience block */}
+      <div className="rounded-3xl border border-foreground/10 bg-foreground/5 backdrop-blur-xl p-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+           <Briefcase size={120} />
+        </div>
+        <div className="flex items-center gap-3 mb-6 relative z-10">
+          <div className="p-2.5 rounded-xl bg-foreground/10 text-foreground/70 border border-foreground/10">
+            <Briefcase size={18} />
+          </div>
+          <h3 className="text-xs font-black uppercase tracking-[0.25em] text-foreground/60">
+            Experience Log
+          </h3>
+        </div>
+
+            <div className="space-y-4">
+              {resumeData.experience.map((exp, idx) => (
+                <div key={idx} className="relative pl-5 group">
+                  {/* Timeline dot */}
+                  <div className="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-foreground/20 border border-foreground/40 group-hover:bg-foreground/60 transition-colors" />
+                  {/* Timeline line */}
+                  {idx < resumeData.experience.length - 1 && (
+                    <div className="absolute left-[3px] top-4 bottom-0 w-px bg-foreground/8" />
+                  )}
+
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h4 className="text-sm font-black text-foreground uppercase tracking-tight leading-tight">
+                      {exp.role}
+                    </h4>
+                    <span className="text-[10px] font-bold text-foreground/35 whitespace-nowrap flex items-center gap-1 mt-0.5">
+                      <CalendarDays size={9} />
+                      {exp.period}
+                    </span>
+                  </div>
+
+                  <ul className="space-y-1">
+                    {exp.bullets.map((b, i) => (
+                      <li
+                        key={i}
+                        className="text-[12px] text-foreground/55 font-medium leading-relaxed"
+                      >
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Projects grid */}
+          <div className="grid grid-cols-12 gap-3">
+            {resumeData.projects.map((project) => (
+              <ProjectCard
+                key={project.title}
+                project={project}
+                onClick={() =>
+                  setSelected(
+                    selected?.title === project.title ? null : project,
+                  )
+                }
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Right: detail panel */}
+        <AnimatePresence>
+          {selected && (
+            <DetailPanel
+              key={selected.title}
+              project={selected}
+              onClose={() => setSelected(null)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }

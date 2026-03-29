@@ -115,18 +115,19 @@ export default function SkillsSection() {
       {/* COMPACT HEADER */}
       <motion.div
         variants={itemVariants}
-        className="flex items-center justify-between px-2 shrink-0"
+        className="flex flex-col gap-2 px-2 shrink-0 mb-4"
       >
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-transparent border-2 border-primary relative overflow-hidden shadow-[0_0_15px_rgba(var(--primary),0.3)]">
-            <Cpu className="text-primary relative z-10" size={32} />
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 relative overflow-hidden">
+            <Cpu className="text-primary relative z-10" size={24} />
           </div>
-          <div>
-            <h3 className="text-4xl font-black text-foreground tracking-tighter uppercase flex items-center gap-3">
-              Technological <span className="text-primary">Core</span>
-            </h3>
-          </div>
+          <h3 className="text-[clamp(1.5rem,3vw,2.5rem)] font-black text-foreground/90 tracking-tighter uppercase leading-none">
+            Tech <span className="text-primary text-opacity-80">Core</span>
+          </h3>
         </div>
+        <p className="text-sm text-foreground/50 font-medium pl-1 tracking-tight">
+          Comprehensive overview of tools, frameworks, and infrastructure
+        </p>
       </motion.div>
 
       {/* NO-SCROLL BENTO GRID */}
@@ -134,9 +135,9 @@ export default function SkillsSection() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
         {Object.entries(resumeData.competencies).map(([category, skills]) => {
           const theme = categoryTheme[category] || {
-            color: "text-white",
-            border: "border-white",
-            glow: "bg-white/20",
+            color: "text-foreground",
+            border: "border-foreground/20",
+            glow: "bg-foreground/20",
             icon: Layers,
             span: "md:col-span-4",
           };
@@ -148,24 +149,24 @@ export default function SkillsSection() {
               variants={itemVariants}
               className={`${theme.span} h-full min-h-0`}
             >
-              <Card className={`h-full ${theme.bg} border-2 ${theme.border} text-foreground group-hover:border-foreground/30 transition-all duration-300 group relative overflow-hidden flex flex-col shadow-none`}>
+              <Card className={`h-full bg-background/40 backdrop-blur-xl border ${theme.border} text-foreground hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group relative overflow-hidden flex flex-col`}>
                 <div
-                  className={`absolute top-0 right-0 w-1/2 h-1/2 ${theme.glow} blur-xl opacity-20 group-hover:opacity-50 transition-opacity`}
+                  className={`absolute inset-0 ${theme.bg} opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
                 />
                 <div
-                  className={`absolute -top-2 -right-2 opacity-5 transform group-hover:scale-125 transition-transform text-foreground blur-[2px]`}
+                  className={`absolute -top-6 -right-6 opacity-[0.03] group-hover:opacity-10 transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 pointer-events-none`}
                 >
-                  <Icon size={120} />
+                  <Icon size={140} />
                 </div>
 
-                <CardHeader className="p-5 pb-2 flex flex-row items-center gap-4 space-y-0 shrink-0 relative z-10">
+                <CardHeader className="p-5 pb-2 flex flex-row items-center gap-3 space-y-0 shrink-0 relative z-10">
                   <div
-                    className={`p-2 rounded-xl bg-transparent border-2 border-foreground/10 group-hover:border-foreground/30 text-foreground shadow-sm`}
+                    className={`p-2 rounded-xl bg-foreground/5 border border-foreground/10 group-hover:bg-foreground/10 transition-colors text-foreground shadow-sm`}
                   >
-                    <Icon size={20} />
+                    <Icon size={18} />
                   </div>
                   <CardTitle
-                    className={`text-xl font-black uppercase tracking-tighter text-foreground`}
+                    className={`text-lg font-black uppercase tracking-tight text-foreground/90`}
                   >
                     {category}
                   </CardTitle>
@@ -181,10 +182,10 @@ export default function SkillsSection() {
                         whileTap={{ scale: 0.92 }}
                       >
                         <Badge
-                          className={`flex items-center gap-2 bg-foreground/5 hover:bg-foreground/10 text-sm text-foreground/70 group-hover:text-foreground border-2 border-transparent group-hover:border-foreground/20 transition-all px-4 py-2 rounded-xl font-bold tracking-tight whitespace-nowrap shadow-sm`}
+                          className={`flex items-center gap-2 bg-background/50 hover:bg-foreground/10 text-[12px] text-foreground/80 group-hover:text-foreground border border-foreground/10 group-hover:border-foreground/30 transition-all duration-300 px-3 py-1.5 rounded-lg font-semibold tracking-tight whitespace-nowrap shadow-sm`}
                         >
                           <span
-                            className={`transition-colors duration-300 text-foreground/40 group-hover:text-foreground scale-125`}
+                            className={`transition-colors duration-300 text-foreground/50 group-hover:text-foreground scale-110`}
                           >
                             {getTechIcon(skill)}
                           </span>
